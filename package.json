@@ -1,0 +1,40 @@
+{
+    "name": "@quarterfall/mermaid-interpreter",
+    "version": "0.0.1",
+    "description": "Knex.js based query builder to interpret design patterns in MermaidJS.",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "npx tsc"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/quarterfall/mermaid-interpreter.git"
+    },
+    "keywords": [
+        "mermaid",
+        "knex",
+        "interpreter",
+        "class",
+        "diagrams",
+        "er",
+        "diagrams"
+    ],
+    "author": "Quarterfall",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/quarterfall/mermaid-interpreter/issues"
+    },
+    "homepage": "https://github.com/quarterfall/mermaid-interpreter#readme",
+    "devDependencies": {
+        "prettier": "^2.7.1",
+        "typescript": "^4.8.4"
+    },
+    "prettier": {
+        "tabWidth": 4
+    },
+    "dependencies": {
+        "knex": "^2.3.0",
+        "mermaid": "^8.13.3",
+        "sqlite3": "^5.1.2"
+    }
+}
