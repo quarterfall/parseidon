@@ -43,7 +43,7 @@ export async function getAllWithRelation(
     relationName: string,
     conn: Knex
 ): Promise<Relation[]> {
-    return getAllWhere(conn, "relations", { relationName: relationName });
+    return getAllWhere(conn, "relations", { relation: relationName });
 }
 
 export async function getAll(conn: Knex, tableName: string): Promise<any[]> {

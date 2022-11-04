@@ -10,7 +10,7 @@ const conn = knex({
     },
     useNullAsDefault: true,
 });
-const relations = [
+export const relations = [
     {
         id1: "Animal",
         id2: "Duck",
@@ -41,7 +41,7 @@ const relations = [
     },
 ];
 
-const classes = {
+export const classes = {
     Animal: {
         id: "Animal",
         type: "",
@@ -89,14 +89,6 @@ const classes = {
     },
 };
 
-/* const dPatterns = [
-    { id: 1, className: "Animal", singleton: "false" },
-    { id: 2, className: "Duck", singleton: "false" },
-    { id: 3, className: "Fish", singleton: "false" },
-    { id: 4, className: "Zebra", singleton: "false" },
-    { id: 5, className: "Singleton", singleton: "true" },
-];
- */
 let classDiagram: ClassDiagram = new ClassDiagram(classes, relations);
 
 describe("Singleton tests", () => {
@@ -117,26 +109,4 @@ describe("Singleton tests", () => {
             await checkSingletonByName("inexistentClass", conn)
         ).toStrictEqual(false);
     });
-
-    /* test("Create design pattern table", async () => {
-        const conn1 = knex({
-            client: "sqlite3",
-            connection: {
-                filename: ":memory:",
-            },
-            useNullAsDefault: true,
-        });
-        expect(await createDesignPatternTable(conn1)).toStrictEqual(
-            conn1("patterns").withSchema
-        );
-        conn1.destroy();
-    }); */
-
-    /* test("Get all design patterns", async () => {
-        await getAllDesignPatterns(conn).then((res) => {
-            expect(JSON.stringify(res)).toStrictEqual(
-                JSON.stringify(dPatterns)
-            );
-        });
-    }); */
 });
