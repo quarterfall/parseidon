@@ -1,5 +1,3 @@
-import * as mermaid from "mermaid";
-
 import knex from "knex";
 import {
     ClassDiagram,
@@ -12,7 +10,7 @@ import {
     _Class,
 } from "./charts/classDiagram";
 
-export async function parseidon(input: string): Promise<
+export async function parseidon(input: any): Promise<
     | {
           classes: _Class[];
           relations: Relation[];
@@ -31,28 +29,25 @@ export async function parseidon(input: string): Promise<
             useNullAsDefault: true,
         });
 
-        //clear parser
-        mermaid.default.mermaidAPI.parse(input).parser.yy.clear();
-        //parse input
-        const temp = mermaid.default.mermaidAPI.parse(input).parser.yy;
-
         let classDiagram: ClassDiagram = new ClassDiagram(
-            temp.getClasses(),
-            temp.getRelations()
+            input.classes,
+            input.relations
         );
-        if (classDiagram.getRelations().length > 0) {
-            await initDatabase(conn, classDiagram);
-            let classes: _Class[] = await getAllClasses(conn);
-            let relations: Relation[] = await getAllRelations(conn);
-            let dPatterns: DesignPattern[] = await getAllDesignPatterns(conn);
-
-            return {
-                classes: classes,
-                relations: relations,
-                designPatterns: dPatterns,
-            };
+        if (!classDiagram?.getRelations().length) {
+            throw new Error("Class diagram has no relations!");
         }
-        return;
+        await initDatabase(conn, classDiagram);
+        let classes: _Class[] = await getAllClasses(conn);
+        let relations: Relation[] = await getAllRelations(conn);
+        let designPatterns: DesignPattern[] = await getAllDesignPatterns(conn);
+
+
+        conn.destroy();
+        return {
+            classes,
+            relations,
+            designPatterns,
+        };
     } catch (e) {
         console.log(e);
         throw e;
