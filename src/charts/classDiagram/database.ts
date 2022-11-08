@@ -128,7 +128,7 @@ export async function createRelationsTable(knex: Knex) {
 export async function insertArray(conn: Knex, tableName: string, array: any[]) {
     return conn(tableName)
         .insert(array)
-        .then(() => console.log(`${tableName} inserted`))
+        .then()
         .catch((e) => {
             console.log(e);
             throw e;
