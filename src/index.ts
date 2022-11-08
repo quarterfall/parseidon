@@ -1,4 +1,5 @@
 import knex from "knex";
+import mermaid from "mermaid";
 import {
     ClassDiagram,
     DesignPattern,
