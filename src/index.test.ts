@@ -203,10 +203,6 @@ const result = {
 };
 
 describe("Parseidon tests", () => {
-
-
-
-
     test("Method test", async () => {
         parseidon(input).then((res) => {
             expect(res).toBe(result);
