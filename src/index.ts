@@ -1,5 +1,3 @@
-import * as mermaid from "mermaid";
-
 import knex from "knex";
 import {
     ClassDiagram,
@@ -12,7 +10,7 @@ import {
     _Class,
 } from "./charts/classDiagram";
 
-export async function parseidon(input: string): Promise<
+export async function parseidon(input: any): Promise<
     | {
           classes: _Class[];
           relations: Relation[];
@@ -31,14 +29,9 @@ export async function parseidon(input: string): Promise<
             useNullAsDefault: true,
         });
 
-        //clear parser
-        mermaid.default.mermaidAPI.parse(input).parser.yy.clear();
-        //parse input
-        const temp = mermaid.default.mermaidAPI.parse(input).parser.yy;
-
         let classDiagram: ClassDiagram = new ClassDiagram(
-            temp.getClasses(),
-            temp.getRelations()
+            input.classes,
+            input.relations
         );
         if (!classDiagram?.getRelations().length) {
             throw new Error("Class diagram has no relations!");
@@ -48,6 +41,8 @@ export async function parseidon(input: string): Promise<
         let relations: Relation[] = await getAllRelations(conn);
         let designPatterns: DesignPattern[] = await getAllDesignPatterns(conn);
 
+
+        conn.destroy();
         return {
             classes,
             relations,
