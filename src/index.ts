@@ -1,6 +1,5 @@
-import * as mermaid from "mermaid";
-
 import knex from "knex";
+import mermaid from "mermaid";
 import {
     ClassDiagram,
     DesignPattern,
@@ -32,9 +31,9 @@ export async function parseidon(input: string): Promise<
         });
 
         //clear parser
-        mermaid.default.mermaidAPI.parse(input).parser.yy.clear();
+        mermaid.mermaidAPI.parse(input).parser.yy.clear();
         //parse input
-        const temp = mermaid.default.mermaidAPI.parse(input).parser.yy;
+        const temp = mermaid.mermaidAPI.parse(input).parser.yy;
 
         let classDiagram: ClassDiagram = new ClassDiagram(
             temp.getClasses(),
