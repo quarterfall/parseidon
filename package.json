@@ -1,6 +1,6 @@
 {
     "name": "@quarterfall/parseidon",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "Knex.js based query builder to interpret design patterns in MermaidJS.",
     "main": "dist/index.js",
     "scripts": {
@@ -28,7 +28,6 @@
     "homepage": "https://github.com/quarterfall/parseidon#readme",
     "devDependencies": {
         "@types/jest": "^29.2.2",
-        "@types/mermaid": "^8.2.9",
         "jest": "^29.3.0",
         "prettier": "^2.7.1",
         "ts-jest": "^29.0.3",
@@ -39,7 +38,6 @@
     },
     "dependencies": {
         "knex": "^2.3.0",
-        "mermaid": "^8.13.3",
         "sqlite3": "^5.1.2"
     }
 }
