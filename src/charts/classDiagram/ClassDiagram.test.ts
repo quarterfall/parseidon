@@ -53,18 +53,21 @@ const newClasses = [
         type: "",
         methods: ["+isMammal()", "+mate()"],
         members: ["+int age", "+String gender"],
+        annotations: []
     },
     {
         id: "Duck",
         type: "",
         methods: ["+swim()", "+quack()"],
         members: ["+String beakColor"],
+        annotations: []
     },
     {
         id: "Fish",
         type: "",
         methods: ["-canEat()"],
         members: ["-int sizeInFeet"],
+        annotations: []
     },
 ];
 

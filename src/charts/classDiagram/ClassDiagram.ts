@@ -12,7 +12,7 @@ export type _Class = {
     type: string;
     members: string[];
     methods: string[];
-    annotations?: string[];
+    annotations: string[];
     domId?: string;
     cssClasses?: string[];
 };
@@ -48,7 +48,6 @@ export class ClassDiagram {
     constructor(classes: {}, debug: any[]) {
         this.classes = Object.values(classes);
         this.classes.forEach((_class) => {
-            delete _class.annotations;
             delete _class.cssClasses;
             delete _class.domId;
         });

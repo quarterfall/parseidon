@@ -6,7 +6,7 @@ export async function createDesignPatternTable(knex: Knex): Promise<Knex.SchemaB
     return knex.schema.createTable("patterns", (table) => {
         table.increments("id").primary();
         table.string("className");
-        table.string("singleton");
+        table.string("pattern");
     });
 }
 

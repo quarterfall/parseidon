@@ -4,7 +4,7 @@ import { ClassDiagram } from "../ClassDiagram";
 import { initDatabase } from "../database";
 import { relations, classes } from "./singleton.test";
 
-const dPatterns = [{ id: 1, className: "Singleton", singleton: "true" }];
+const dPatterns = [{ id: 1, className: "Singleton", pattern: "singleton" }];
 
 const conn = knex({
     client: "sqlite3",

@@ -11,20 +11,23 @@ const classes1 = [
       type: "",
       members: "+int age,+String gender",
       methods: "+isMammal(),+mate()",
+      annotations: ""
     },
     {
       id: "Duck",
       type: "",
       members: "+String beakColor",
       methods: "+swim(),+quack()",
+      annotations: ""
     },
-    { id: "Fish", type: "", members: "-int sizeInFeet", methods: "-canEat()" },
-    { id: "Zebra", type: "", members: "+bool is_wild", methods: "+run()" },
+    { id: "Fish", type: "", members: "-int sizeInFeet", methods: "-canEat()", annotations: "" },
+    { id: "Zebra", type: "", members: "+bool is_wild", methods: "+run()", annotations: "" },
     {
       id: "Singleton",
       type: "",
       members: "-Singleton singleton$",
       methods: "-Singleton(),+getInstance()$ Singleton",
+      annotations: ""
     },
   ];
   

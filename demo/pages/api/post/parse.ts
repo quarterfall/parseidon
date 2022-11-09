@@ -1,11 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { parseidon } from "@quarterfall/parseidon";
 
 export default async function parseHandler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    const { input } = req.body;
-    const parseidon = (await import("@quarterfall/parseidon")).parseidon;
+    const input = req.body;
 
     const parsedChart = await parseidon(input);
 
