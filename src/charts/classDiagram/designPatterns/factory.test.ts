@@ -40,15 +40,6 @@ const classes = {
         annotations: [],
         domId: "classid-ProductA-185",
     },
-    Singleton: {
-        id: "Singleton",
-        type: "",
-        cssClasses: [],
-        methods: ["-Singleton()", "+getInstance()$ Singleton"],
-        members: ["-Singleton singleton$"],
-        annotations: [],
-        domId: "classid-Singleton-9"
-    },
     Product: {
         id: "Product",
         type: "",
@@ -86,11 +77,6 @@ const relations = [
 const patterns = [
     {
         id:1,
-        className: "Singleton",
-        pattern: "singleton"
-    },
-    {
-        id:2,
         className: "all",
         pattern: "factory"
     },
