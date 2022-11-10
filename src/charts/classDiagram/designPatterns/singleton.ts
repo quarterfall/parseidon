@@ -1,6 +1,6 @@
 import { Knex } from "knex";
 import { ClassDiagram, Member, Method, _Class } from "../ClassDiagram";
-import { getAllWhere } from "../database";
+import { getPrivateStaticClassInstance, getPrivateConstructor, getMethodReturningClassInstance, checkIfOtherClassesHaveClassInstance } from "./util";
 
 export async function insertSingletons(knex: Knex, classDiagram: ClassDiagram) {
     let classes: _Class[] = classDiagram.getClasses();
@@ -37,38 +37,5 @@ export async function checkSingletonByName(className: string,conn: Knex): Promis
     //step 4 check other class members for singleton class instance
 
     return checkIfOtherClassesHaveClassInstance(conn, className);
-}
-async function checkIfOtherClassesHaveClassInstance(conn: Knex<any, any[]>, className: string) {
-    let temp: Member[] = await getAllWhere(conn, "members", {
-        type: className,
-        class: !className
-    });
-
-    if (temp.length>0) {return false;} else {
-        return true;
-    }
-}
-
-async function getPrivateConstructor(conn: Knex<any, any[]>, className: string): Promise<Method[]> {
-    return getAllWhere(conn, "methods", {
-        accessibility: "private",
-        name: className
-    });
-}
-
-async function getMethodReturningClassInstance(conn: Knex<any, any[]>, className: string): Promise<Method[]> {
-    return getAllWhere(conn, "methods", {
-        accessibility: "public",
-        returnType: className,
-        classifier: "static"
-    });
-}
-
-async function getPrivateStaticClassInstance(conn: Knex<any, any[]>, className: string): Promise<Member[]> {
-    return getAllWhere(conn, "members", {
-        type: className,
-        accessibility: "private",
-        classifier: "static"
-    });
 }
 

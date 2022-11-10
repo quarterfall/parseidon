@@ -5,7 +5,7 @@ export function getDesignPatternArray(debug: any[]): Relation[] {
     let i: number = 1;
     debug.forEach((rel) => {
         structuredRelations.push({
-            id: i++,
+            id: i,
             first_class:
                 rel.relation.type2 === "none" && rel.relation.type1 !== "none"
                     ? rel.id2
@@ -172,3 +172,5 @@ export function getMethodName(method: string): string {
         return method.substring(1, method.indexOf("(")).trim();
     }
 }
+
+

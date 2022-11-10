@@ -34,7 +34,7 @@ export async function initDatabase(conn: Knex, classDiagram: ClassDiagram) {
 
     await insertFactory(conn);
 
-    await insertStrategy(conn, classDiagram);
+    await insertStrategy(conn);
 }
 
 export async function getAllRelations(conn: Knex): Promise<Relation[]> {
