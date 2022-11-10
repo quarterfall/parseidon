@@ -12,7 +12,7 @@ export default function Home() {
     const [code, setCode] = useState("");
 
     const defaultValues = {
-        code: "```mermaid \n classDiagram \n classA <|-- classB \n classC *-- classD \n classE o-- classF \n classG <-- classH \n classI -- classJ \n classK <.. classL \n classM <|.. classN \n classO .. classP \n```",
+        code: "```mermaid \n classDiagram\r\n    Animal <|-- Duck\r\n    Animal <|-- Fish\r\n    Animal <|-- Zebra\r\n    Singleton --> Singleton\r\n    Animal : +int age\r\n    Animal : +String gender\r\n    Animal: +isMammal()\r\n    Animal: +mate()\r\n    class Duck{\r\n        +String beakColor\r\n        +swim()\r\n        +quack()\r\n    }\r\n    class Fish{\r\n        -int sizeInFeet\r\n        -canEat()\r\n    }\r\n    class Zebra{\r\n        +bool is_wild\r\n        +run()\r\n    }\r\n    class Singleton{\r\n      -Singleton singleton$\r\n      -Singleton()\r\n      +getInstance()$ Singleton    \r\n    }```",
     };
 
     const { handleSubmit, control, watch, reset } = useForm<IFormInput>({

@@ -48,16 +48,15 @@ const InputForm = ({
                         >
                             Send
                         </Button>
-                        {commonCardVisible && (
-                            <Button
-                                onClick={changeCardVisible}
-                                variant="text"
-                                data-cy="reset_Button"
-                                sx={{ ml: "10px" }}
-                            >
-                                Reset
-                            </Button>
-                        )}
+                        <Button
+                            onClick={changeCardVisible}
+                            variant="text"
+                            data-cy="reset_Button"
+                            sx={{ ml: "10px" }}
+                            disabled = {commonCardVisible ? false : true}
+                        >
+                            Reset
+                        </Button>
                     </Box>
                 </CardContent>
             </Card>

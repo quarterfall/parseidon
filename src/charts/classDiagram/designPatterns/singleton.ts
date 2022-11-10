@@ -8,7 +8,7 @@ export async function insertSingletons(knex: Knex, classDiagram: ClassDiagram) {
         if (await checkSingletonByName(classes[i].id, knex)) {
             await knex("patterns").insert({
                 className: classes[i].id,
-                singleton: "true",
+                pattern: "singleton",
             });
         }
     }
