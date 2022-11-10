@@ -32,7 +32,7 @@ export async function initDatabase(conn: Knex, classDiagram: ClassDiagram) {
 
     await insertSingletons(conn, classDiagram);
 
-    await insertFactory(conn, classDiagram);
+    await insertFactory(conn);
 
     await insertStrategy(conn, classDiagram);
 }

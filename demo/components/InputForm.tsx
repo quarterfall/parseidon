@@ -21,7 +21,7 @@ const InputForm = ({
                 sx={{
                     minWidth: 200,
                     maxWidth: 545,
-                    ml: "200px",
+                    ml: "100px",
                     mt: "60px",
                     position: "relative",
                 }}

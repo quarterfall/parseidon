@@ -5,7 +5,7 @@ export function getDesignPatternArray(debug: any[]): Relation[] {
     let i: number = 1;
     debug.forEach((rel) => {
         structuredRelations.push({
-            id: i,
+            id: i++,
             first_class:
                 rel.relation.type2 === "none" && rel.relation.type1 !== "none"
                     ? rel.id2
@@ -66,7 +66,7 @@ function conversion(relationCode: string, lineType: string): string {
         default:
             return "";
     }
-}
+     }
 
 export function getAccessibility(member: string): string {
     let char: string = member.charAt(0);

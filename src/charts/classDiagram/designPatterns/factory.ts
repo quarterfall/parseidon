@@ -1,9 +1,10 @@
 import { Knex } from "knex";
-import { ClassDiagram, Method, Relation, _Class } from "../ClassDiagram";
+import { Method, _Class } from "../ClassDiagram";
 import { getAllWhere } from "../database";
+import { checkForRelation, getAllAbstractClasses, getAllInterfaces, getAllMethodsFromClass } from "./util";
 
-export async function insertFactory(knex: Knex, classDiagram: ClassDiagram) {
-    if (await checkFactory(knex,classDiagram) == true) {
+export async function insertFactory(knex: Knex) {
+    if (await checkFactory(knex) == true) {
         await knex("patterns").insert({
             className: "all",
             pattern: "factory"
@@ -11,84 +12,43 @@ export async function insertFactory(knex: Knex, classDiagram: ClassDiagram) {
     }
 }
 
-
-
 export async function checkFactory(
     conn: Knex,
-    classDiagram: ClassDiagram
 ): Promise<boolean> {
-    let classes: _Class[] = classDiagram.getClasses();
 
-    let relations: Relation[] = classDiagram.getRelations();
+    let interfaces: _Class[] = await getAllInterfaces(conn);
 
-    //look for an interface
-    for (let _class of classes) {
-        //found possible product interface
-        if (_class.annotations.includes("interface")) {
-            //check for at least one class implementing  interface
-            checkForRealizationRelation(_class);
+    let abstractClasses: _Class[] = await getAllAbstractClasses(conn);
 
-            //look for abstract class
-            for (let abstractClass of classes) {
-                //if found
-                if (abstractClass.annotations.includes("abstract")) {
-                    //get methods
-                    let methods: Method[] = await getAllWhere(conn, "methods", {
-                        class: abstractClass.id,
-                    });
+    if (interfaces.length<1) { return false;}
 
-                    if (methods.length > 1) {
-                        //check if there is an abstract method returning product interface
-                        checkForAbstractMethodReturningInterface(methods, _class);
-                        //check if there is at least one class inheriting from abstract class
-                        return checkForClassInheritingFromCreator(relations, abstractClass, methods);
-                    }
+    for (let _interface of interfaces) {
+        if (await checkForRelation(conn, _interface.id, "realization") == true) {
+            for (let abstractClass of abstractClasses) {
+                let methods: Method[] = await getAllMethodsFromClass(conn, abstractClass.id);
+                if (methods.length>1) {
+                    if (await checkForAbstractMethodReturningInterface(_interface)) {
+                        return checkForRelation(conn, abstractClass.id, "inheritance");
+                    } 
+                } else {
+                    continue;
                 }
             }
-        }
+        } 
     }
+
     return false;
 
-    function checkForClassInheritingFromCreator(relations: Relation[], abstractClass: _Class, methods: Method[]): boolean {
-        for (let i = 0; i < relations.length; i++) {
-            if (
-                relations[i].second_class ===
-                    abstractClass.id &&
-                relations[i].relation === "inheritance"
-            ) {
-                return true;
-            } else {
-                if (i == methods.length - 1) {
-                    continue;
-                }
-            }
-        }
-        return false;
-    } 
+   async function checkForAbstractMethodReturningInterface(_class: _Class): Promise<boolean> {
+        let methods: Method[] = await getAllWhere(conn, "methods", {
+            classifier: "abstract",
+            returnType: _class.id
+        });
 
-    function checkForAbstractMethodReturningInterface(methods: Method[], _class: _Class) {
-        for (let i = 0; i < methods.length; i++) {
-            if (methods[i].classifier === "abstract" &&
-                methods[i].returnType === _class.id) {
-                break;
-            } else {
-                if (i == methods.length - 1) {
-                    continue;
-                }
-            }
-        }
+        if (methods.length>0) {return true;}
+        else {return false;}
+
     }
 
-    function checkForRealizationRelation(_class: _Class) {
-        for (let i = 0; i < relations.length; i++) {
-            if (relations[i].second_class === _class.id &&
-                relations[i].relation === "realization") {
-                break;
-            } else {
-                if (i == relations.length - 1) {
-                    continue;
-                }
-            }
-        }
-    }
+   
 }

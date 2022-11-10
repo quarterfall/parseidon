@@ -15,3 +15,5 @@ export async function getAllDesignPatterns(
 ): Promise<DesignPattern[]> {
     return getAll(conn, "patterns");
 }
+
+

@@ -14,86 +14,61 @@ export async function insertSingletons(knex: Knex, classDiagram: ClassDiagram) {
     }
 }
 
-export async function checkSingletonByName(
-    className: string,
-    conn: Knex
-): Promise<boolean> {
-    let classMembers: Member[] = await getAllWhere(conn, "members", {
-        class: className,
-    });
-    let classMethods: Method[] = await getAllWhere(conn, "methods", {
-        class: className,
-    });
-    let allOtherMembers: Member[] = [];
-
-    await conn
-        .from("members")
-        .select("*")
-        .whereNot({ class: className })
-        .then((rows) => {
-            rows.forEach((row) => {
-                allOtherMembers.push(row);
-            });
-        });
-
-    if (!classMembers.length) {
-        return false;
-    }
+export async function checkSingletonByName(className: string,conn: Knex): Promise<boolean> {
 
     //step 1 check for private static instance of class
 
-    for (let i = 0; i < classMembers.length; i++) {
-        if (
-            classMembers[i].type === className &&
-            classMembers[i].accessibility === "private" &&
-            classMembers[i].classifier === "static"
-        ) {
-            break;
-        } else {
-            if (i == classMembers.length - 1) {
-                return false;
-            }
-        }
-    }
+    let members : Member[] = await getPrivateStaticClassInstance(conn, className);
+
+    if (members.length<1) { return false; }
 
     //step 2 check for private constructor
 
-    for (let i = 0; i < classMethods.length; i++) {
-        if (
-            classMethods[i].accessibility === "private" &&
-            classMethods[i].name === className
-        ) {
-            break;
-        } else {
-            if (i == classMethods.length - 1) {
-                return false;
-            }
-        }
-    }
+    let methods : Method[] = await getPrivateConstructor(conn, className);
+
+    if (methods.length<1) {return false;}
 
     //step 3 public method returning instance
 
-    for (let i = 0; i < classMethods.length; i++) {
-        if (
-            classMethods[i].accessibility === "public" &&
-            classMethods[i].returnType === className &&
-            classMethods[i].classifier === "static"
-        ) {
-            break;
-        } else {
-            if (i == classMethods.length - 1) {
-                return false;
-            }
-        }
-    }
+    let methods1 = await getMethodReturningClassInstance(conn, className);
+
+    if (methods1.length<1) { return false; }
 
     //step 4 check other class members for singleton class instance
 
-    for (let member of allOtherMembers) {
-        if (member.type === className) {
-            return false;
-        }
-    }
-
-    return true;
+    return checkIfOtherClassesHaveClassInstance(conn, className);
 }
+async function checkIfOtherClassesHaveClassInstance(conn: Knex<any, any[]>, className: string) {
+    let temp: Member[] = await getAllWhere(conn, "members", {
+        type: className,
+        class: !className
+    });
+
+    if (temp.length>0) {return false;} else {
+        return true;
+    }
+}
+
+async function getPrivateConstructor(conn: Knex<any, any[]>, className: string): Promise<Method[]> {
+    return getAllWhere(conn, "methods", {
+        accessibility: "private",
+        name: className
+    });
+}
+
+async function getMethodReturningClassInstance(conn: Knex<any, any[]>, className: string): Promise<Method[]> {
+    return getAllWhere(conn, "methods", {
+        accessibility: "public",
+        returnType: className,
+        classifier: "static"
+    });
+}
+
+async function getPrivateStaticClassInstance(conn: Knex<any, any[]>, className: string): Promise<Member[]> {
+    return getAllWhere(conn, "members", {
+        type: className,
+        accessibility: "private",
+        classifier: "static"
+    });
+}
+
