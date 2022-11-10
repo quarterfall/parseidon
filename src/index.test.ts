@@ -159,12 +159,12 @@ const result = {
         {
             className: "Singleton",
             id: 1,
-            singleton: "true",
+            pattern: "singleton",
         },
         {
             className: "SecondSingleton",
             id: 2,
-            singleton: "true",
+            pattern: "singleton",
         },
     ],
 
