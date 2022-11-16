@@ -10,17 +10,12 @@ import {
     getMethodReturnType,
 } from "./util";
 
-import { createDesignPatternTable } from "./designPatterns";
-import { insertSingletons } from "./designPatterns/singleton";
-import { insertFactory } from "./designPatterns/factory";
-import { insertStrategy } from "./designPatterns/strategy";
 
 export async function initDatabase(conn: Knex, classDiagram: ClassDiagram) {
     await createMethodsTable(conn);
     await createMembersTable(conn);
     await createClassesTable(conn);
     await createRelationsTable(conn);
-    await createDesignPatternTable(conn);
 
     await insertMembersAndMethods(conn, classDiagram);
 
@@ -30,11 +25,6 @@ export async function initDatabase(conn: Knex, classDiagram: ClassDiagram) {
     //insert relations
     await insertArray(conn, "relations", classDiagram.getRelations());
 
-    await insertSingletons(conn, classDiagram);
-
-    await insertFactory(conn);
-
-    await insertStrategy(conn);
 }
 
 export async function getAllRelations(conn: Knex): Promise<Relation[]> {

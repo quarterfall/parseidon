@@ -1,0 +1,1 @@
+export { checkAdapter } from "./adapter";

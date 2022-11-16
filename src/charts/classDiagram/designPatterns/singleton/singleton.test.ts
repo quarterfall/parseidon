@@ -1,7 +1,8 @@
 import knex from "knex";
-import { ClassDiagram } from "../ClassDiagram";
-import { initDatabase } from "../database";
+import { ClassDiagram } from "../../ClassDiagram";
+import { initDatabase } from "../../database";
 import { checkSingletonByName } from "./singleton";
+import { getPrivateStaticSingletonInstance, getPublicMethodReturningSingleton, getSingletonInstancesFromOtherClasses } from "./singleton.queries";
 
 const conn = knex({
     client: "sqlite3",
@@ -101,12 +102,30 @@ describe("Singleton tests", () => {
     });
 
     test("Check singleton", async () => {
-        expect(await checkSingletonByName("Singleton", conn)).toStrictEqual(
+        expect(await checkSingletonByName(conn, "Singleton")).toStrictEqual(
             true
         );
-        expect(await checkSingletonByName("Animal", conn)).toStrictEqual(false);
+        expect(await checkSingletonByName(conn, "Animal")).toStrictEqual(false);
         expect(
-            await checkSingletonByName("inexistentClass", conn)
+            await checkSingletonByName(conn,"inexistentClass",)
         ).toStrictEqual(false);
     });
+
+    test("getPublicMethodsReturningSingleton", async() => {
+        await getPublicMethodReturningSingleton(conn, "Singleton").then(res => {
+            expect(JSON.stringify(res)).toStrictEqual(JSON.stringify([{id: 8, returnType: "Singleton", name: "getInstance", accessibility: "public", classifier: "static", class: "Singleton"}]))
+        })
+    });
+
+    test("getSingletonInstancesFromOtherClasses", async() => {
+        await getSingletonInstancesFromOtherClasses(conn, "Singleton").then(res => {
+            expect(res.length).toBe(0);
+        })
+    });
+    
+    test("getPrivateStaticSingletonInstance", async () => {
+        await getPrivateStaticSingletonInstance(conn, "Singleton").then(res => {
+             expect(JSON.stringify(res)).toStrictEqual(JSON.stringify([{id: 6, type: "Singleton", name: "singleton", accessibility: "private", classifier: "static", class: "Singleton"}]))
+          })
+      });
 });
