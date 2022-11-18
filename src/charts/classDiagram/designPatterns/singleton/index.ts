@@ -1,0 +1,1 @@
+export {checkSingletonByName} from "./singleton";

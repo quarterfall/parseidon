@@ -1,8 +1,8 @@
 import knex from "knex";
 import { ClassDiagram } from "./ClassDiagram";
-import { initDatabase, getAllRelations, getAllWithRelation, getAllClasses } from "./database";
+import { initDatabase, getAllRelations, getAllWithRelation, getAllClasses, getAll } from "./database";
 
-import { classes, relations } from "./designPatterns/singleton.test";
+import { classes, relations } from "./designPatterns/singleton/singleton.test";
 
 let classDiagram: ClassDiagram = new ClassDiagram(classes, relations);
 const classes1 = [
@@ -104,5 +104,13 @@ describe("Database tests", () => {
                 i++;
             });
         })
+    });
+
+    test("Get all methods", async() => {
+      await getAll(conn, "methods").then(res => {
+          res.forEach(relation => {
+            expect(relation.parameter).toBe("");
+          }) 
+      })
     })
 });

@@ -1,0 +1,1 @@
+export {checkFactory} from "./factory";

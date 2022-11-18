@@ -7,9 +7,16 @@ export default async function parseHandler(
 ) {
     const input = req.body;
 
-    const parsedChart = await parseidon(input);
+    if (!input) {
+        return res.status(404).json({ message: "No input found" });
+    }
+    let parsedChart = null;
+    try {
+        parsedChart = await parseidon(input);
+    } catch (e) {
+        return res.status(400).json({e});
+    }
 
-    parsedChart
-        ? res.status(200).json(parsedChart)
-        : res.status(404).json({ message: "Chart wasn't parsed correctly" });
+    return res.status(200).json(parsedChart)
+        
 }

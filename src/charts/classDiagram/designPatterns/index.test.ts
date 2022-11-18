@@ -2,7 +2,7 @@ import knex from "knex";
 import { getAllDesignPatterns } from ".";
 import { ClassDiagram } from "../ClassDiagram";
 import { initDatabase } from "../database";
-import { relations, classes } from "./singleton.test";
+import { relations, classes } from "./singleton/singleton.test";
 
 const dPatterns = [{ id: 1, className: "Singleton", pattern: "singleton" }];
 

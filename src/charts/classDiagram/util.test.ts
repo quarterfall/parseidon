@@ -6,6 +6,7 @@ import {
     getMemberName,
     getMemberReturnType,
     getMethodName,
+    getMethodParameter,
     getMethodReturnType,
 } from "./util";
 
@@ -73,7 +74,7 @@ describe("Index tests", () => {
     });
 
     test("Test getMemberReturnType", () => {
-        expect(getMemberReturnType("+int age")).toStrictEqual("int");
+        expect(getMemberReturnType("+int[] age")).toStrictEqual("int[]");
     });
 
     test("Test getMemberName", () => {
@@ -95,4 +96,8 @@ describe("Index tests", () => {
     test("Test getMethodReturnType with classifier", () => {
         expect(getMethodReturnType("+isAlive()$ bool")).toStrictEqual("bool");
     });
+
+    test("Test getMethodParamter", () => {
+        expect(getMethodParameter("-isFunny(string sentence) bool")).toStrictEqual("string");
+    })
 });

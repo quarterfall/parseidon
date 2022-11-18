@@ -37,7 +37,7 @@ export type Method = {
 export type DesignPattern = {
     id: number;
     className: string;
-    singleton: string;
+    pattern: string;
 };
 
 export class ClassDiagram {

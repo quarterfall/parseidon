@@ -7,20 +7,16 @@ import {
     getMemberName,
     getMemberReturnType,
     getMethodName,
+    getMethodParameter,
     getMethodReturnType,
 } from "./util";
 
-import { createDesignPatternTable } from "./designPatterns";
-import { insertSingletons } from "./designPatterns/singleton";
-import { insertFactory } from "./designPatterns/factory";
-import { insertStrategy } from "./designPatterns/strategy";
 
 export async function initDatabase(conn: Knex, classDiagram: ClassDiagram) {
     await createMethodsTable(conn);
     await createMembersTable(conn);
     await createClassesTable(conn);
     await createRelationsTable(conn);
-    await createDesignPatternTable(conn);
 
     await insertMembersAndMethods(conn, classDiagram);
 
@@ -30,11 +26,6 @@ export async function initDatabase(conn: Knex, classDiagram: ClassDiagram) {
     //insert relations
     await insertArray(conn, "relations", classDiagram.getRelations());
 
-    await insertSingletons(conn, classDiagram);
-
-    await insertFactory(conn, classDiagram);
-
-    await insertStrategy(conn, classDiagram);
 }
 
 export async function getAllRelations(conn: Knex): Promise<Relation[]> {
@@ -88,6 +79,7 @@ export async function createMethodsTable(knex: Knex) {
         table.increments("id").primary();
         table.string("returnType");
         table.string("name");
+        table.string("parameter");
         table.string("accessibility");
         table.string("classifier");
         table.string("class");
@@ -165,6 +157,7 @@ export async function insertMembersAndMethods(
                         ? getMethodReturnType(method)
                         : "void",
                 name: getMethodName(method),
+                parameter: getMethodParameter(method),
                 accessibility: getAccessibility(method),
                 classifier: getClassifierMethod(method),
                 class: _class.id,

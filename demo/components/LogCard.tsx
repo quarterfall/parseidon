@@ -75,9 +75,14 @@ const LogCard = ({ chart }: MermaidRendererProps) => {
                         <h3>Design Patterns</h3>
                         <ul>
                             {classDiagram.designPatterns.map((pattern) => (
-                                <li>
-                                    Class {pattern.className} is a singleton
-                                </li>
+                                <div>
+                                    {(pattern.className === "all") && (<li>{pattern.pattern} pattern</li>)}
+                                    {(pattern.className !== "all") &&
+                                        <li>
+                                            Class {pattern.className} is a {pattern.pattern}
+                                        </li>
+                                    }
+                                </div>
                             ))}
                         </ul>
                     </div>
