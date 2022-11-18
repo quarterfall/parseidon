@@ -2,6 +2,8 @@ import { ClassDiagram } from "../../ClassDiagram";
 import { initDatabase } from "../../database";
 import { getAllDesignPatterns } from "..";
 import knex from "knex";
+import { checkIfClassHasRelation, checkIfClassOfMemberHasARelation } from "../queries";
+import { checkIfAdapterClassHasRelation} from "./adapter.queries";
 
 const classes = {
         Adapter: {
@@ -80,7 +82,7 @@ const conn = knex({
 
 let classDiagram: ClassDiagram = new ClassDiagram(classes, relations);
 
-describe("Adapter tests", () => {
+describe("Adapter pattern tests", () => {
     beforeAll(async () => {
         await initDatabase(conn, classDiagram);
     });
@@ -91,5 +93,54 @@ describe("Adapter tests", () => {
 
     test("Test check adapter", async() => {
         expect(JSON.stringify(await getAllDesignPatterns(conn))).toStrictEqual(JSON.stringify(patterns));
+    });
+    
+    test("Test first step", async() => {
+        await conn
+        .from("classes")
+        .select("classes.id")
+        .where("annotations","interface")
+        .then(res => {
+            expect(res).toEqual([{id: "Client_Interface"}])
+        })
+    });
+
+    test("Test second step", async() => {
+        await conn
+        .from("classes")
+        .select("classes.id")
+        .where("annotations","interface")
+        .join("relations", checkIfClassHasRelation())
+        .where("relations.relation","realization")
+        .then(res => {
+            expect(res).toEqual([{id: "Client_Interface"}])
+        })
+    });
+
+    test("Test third step", async() => {
+        await conn
+        .from("classes")
+        .select("classes.id")
+        .where("annotations","interface")
+        .join("relations", checkIfClassHasRelation())
+        .where("relations.relation","realization")
+        .join("members", checkIfClassOfMemberHasARelation())
+        .then(res => {
+            expect(res).toEqual([{id: "Client_Interface"}])
+        })
     })
-});
+
+    test("Test fourth step", async() => {
+        await conn
+        .from("classes")
+        .select("classes.id")
+        .where("annotations","interface")
+        .join("relations", checkIfClassHasRelation())
+        .where("relations.relation","realization")
+        .join("members", checkIfClassOfMemberHasARelation())
+        .join("relations as r", checkIfAdapterClassHasRelation())
+        .then(res => {
+            expect(res).toEqual([{id: "Client_Interface"}])
+        })
+    })
+}); 

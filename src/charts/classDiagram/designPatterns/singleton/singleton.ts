@@ -1,7 +1,7 @@
 import { Knex } from "knex";
 import { _Class } from "../../ClassDiagram";
 import { getPrivateConstructor} from "../queries";
-import { getPrivateStaticSingletonInstance, getPublicMethodReturningSingleton, getSingletonInstancesFromOtherClasses } from "./";
+import { getPrivateStaticSingletonInstance, getPublicMethodReturningSingleton, getSingletonInstancesFromOtherClasses } from "./singleton.queries";
 
 export async function checkSingletonByName(knex: Knex, className: string) {
     

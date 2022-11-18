@@ -2,6 +2,7 @@ import { Knex } from "knex";
 import { DesignPattern, _Class } from "../ClassDiagram";
 import { getAll } from "../database";
 import { checkAdapter } from "./adapter";
+import { checkComposite } from "./composite";
 import { checkFactory } from "./factory";
 import { checkSingletonByName } from "./singleton";
 import { checkStrategy } from "./strategy";
@@ -35,6 +36,13 @@ export async function getAllDesignPatterns(
             designPatterns.push({id:patternId++, className: "all", pattern: "adapter"})
         }
     })
+
+    await checkComposite(conn).then(res => {
+        if (res) {
+            designPatterns.push({id:patternId++, className: "all", pattern: "composite"})
+        }
+    })
+
 
     return designPatterns;
 

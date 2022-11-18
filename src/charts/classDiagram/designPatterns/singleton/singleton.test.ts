@@ -113,7 +113,7 @@ describe("Singleton tests", () => {
 
     test("getPublicMethodsReturningSingleton", async() => {
         await getPublicMethodReturningSingleton(conn, "Singleton").then(res => {
-            expect(JSON.stringify(res)).toStrictEqual(JSON.stringify([{id: 8, returnType: "Singleton", name: "getInstance", accessibility: "public", classifier: "static", class: "Singleton"}]))
+            expect(JSON.stringify(res)).toStrictEqual(JSON.stringify([{id: 8, returnType: "Singleton", name: "getInstance", parameter: "", accessibility: "public", classifier: "static", class: "Singleton"}]))
         })
     });
 

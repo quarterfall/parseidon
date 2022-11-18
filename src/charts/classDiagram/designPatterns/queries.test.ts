@@ -5,7 +5,7 @@ import { getPrivateConstructor} from "./queries";
 import { classes as singletonClasses, relations as singletonRelations } from "./singleton/singleton.test"; 
 
 
-describe("Singleton queries tests", () => {
+describe("General queries tests", () => {
 
     const conn = knex({
         client: "sqlite3",
@@ -26,7 +26,7 @@ describe("Singleton queries tests", () => {
 
     test("getPrivateConstructor", async() => {
         await getPrivateConstructor(conn, "Singleton").then(res => {
-            expect(JSON.stringify(res)).toStrictEqual(JSON.stringify([{id: 7, returnType: "void", name: "Singleton", accessibility: "private", classifier: "none", class: "Singleton"}]))
+            expect(JSON.stringify(res)).toStrictEqual(JSON.stringify([{id: 7, returnType: "void", name: "Singleton", parameter: "", accessibility: "private", classifier: "none", class: "Singleton"}]))
         })
     });
 

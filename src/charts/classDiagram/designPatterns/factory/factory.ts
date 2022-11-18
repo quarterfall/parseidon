@@ -1,7 +1,7 @@
 import { Knex } from "knex";
 import { _Class } from "../../ClassDiagram";
 import { compareClassIDToClassOfMethod} from "../queries";
-import { compareMethodReturnTypeToClass, compareMethodClassToRelationClass } from "./";
+import { compareMethodReturnTypeToClass, compareMethodClassToRelationClass } from "./factory.queries";
 
 export async function checkFactory(knex: Knex) {
     return knex

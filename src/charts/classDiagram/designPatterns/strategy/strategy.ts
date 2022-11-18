@@ -1,7 +1,7 @@
 import { Knex } from "knex";
 import { _Class } from "../../ClassDiagram";
 import {checkIfRelationWithMemberTypeExists , checkIfClassHasRelation, compareClassIDToClassOfMethod} from "../queries";
-import { compareMemberTypeToStrategyInterface } from "./";
+import { compareMemberTypeToStrategyInterface } from "./strategy.queries";
 
 export async function checkStrategy(knex: Knex): Promise<Boolean> {
    

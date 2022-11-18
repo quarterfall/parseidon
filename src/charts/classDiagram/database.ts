@@ -7,6 +7,7 @@ import {
     getMemberName,
     getMemberReturnType,
     getMethodName,
+    getMethodParameter,
     getMethodReturnType,
 } from "./util";
 
@@ -78,6 +79,7 @@ export async function createMethodsTable(knex: Knex) {
         table.increments("id").primary();
         table.string("returnType");
         table.string("name");
+        table.string("parameter");
         table.string("accessibility");
         table.string("classifier");
         table.string("class");
@@ -155,6 +157,7 @@ export async function insertMembersAndMethods(
                         ? getMethodReturnType(method)
                         : "void",
                 name: getMethodName(method),
+                parameter: getMethodParameter(method),
                 accessibility: getAccessibility(method),
                 classifier: getClassifierMethod(method),
                 class: _class.id,

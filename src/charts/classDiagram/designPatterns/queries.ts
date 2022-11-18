@@ -28,3 +28,9 @@ export function checkIfRelationWithMemberTypeExists(): Knex.JoinCallback {
     }
 }
 
+export function checkIfClassOfMemberHasARelation(): Knex.JoinCallback {
+    return async function() {
+        this.on("relations.first_class","=","members.class")
+    }
+}
+

@@ -155,6 +155,7 @@ export function getMemberName(member: string) {
 }
 
 export function getMethodReturnType(method: string): string {
+    method = method.replace(/\s+/g, " ");
     if (getClassifierMethod(method) !== "none") {
         return method
             .substring(method.indexOf(")") + 1)
@@ -166,11 +167,19 @@ export function getMethodReturnType(method: string): string {
 }
 
 export function getMethodName(method: string): string {
+    method = method.replace(/\s+/g, " ");
     if (getAccessibility(method) === "none") {
         return method.substring(0, method.indexOf("(")).trim();
     } else {
         return method.substring(1, method.indexOf("(")).trim();
     }
+}
+
+export function getMethodParameter(method: string): string {
+    if (Math.abs(method.indexOf("(") - method.indexOf(")")) == 1) {
+        return "";
+    }
+    return method.substring(method.indexOf("(")+1,method.indexOf(" "));
 }
 
 

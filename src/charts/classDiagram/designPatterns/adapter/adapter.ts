@@ -1,6 +1,6 @@
 import { Knex } from "knex";
-import { checkIfClassHasRelation} from "../queries";
-import { checkIfAdapterClassHasRelation, checkIfClassOfMemberHasARelation } from "./adapter.queries";
+import { checkIfClassHasRelation, checkIfClassOfMemberHasARelation} from "../queries";
+import { checkIfAdapterClassHasRelation } from "./adapter.queries";
 
 export async function checkAdapter(knex: Knex): Promise<Boolean> {
 
@@ -12,6 +12,7 @@ export async function checkAdapter(knex: Knex): Promise<Boolean> {
         .where("relations.relation","realization")
         .join("members", checkIfClassOfMemberHasARelation())
         .join("relations as r", checkIfAdapterClassHasRelation())
+        .where("r.relation","association")
         .then(res => {
             return Boolean(res.length);
         })
