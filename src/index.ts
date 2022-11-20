@@ -33,15 +33,21 @@ export async function parseidon(input: any): Promise<
             input.classes,
             input.relations
         );
-        if (!classDiagram?.getRelations().length) {
-            throw new Error("Class diagram has no relations!");
-        }
+       
         await initDatabase(conn, classDiagram);
         let classes: _Class[] = await getAllClasses(conn);
-        let relations: Relation[] = await getAllRelations(conn);
-        let designPatterns: DesignPattern[] = await getAllDesignPatterns(conn);
-
-
+        let relations: Relation[] = [];
+        let designPatterns: DesignPattern[] = [];    
+        if (!classDiagram?.getRelations().length) {
+            conn.destroy();
+            return {
+                classes,
+                relations,
+                designPatterns
+            }
+        }
+        relations = await getAllRelations(conn);
+        designPatterns = await getAllDesignPatterns(conn);
         conn.destroy();
         return {
             classes,

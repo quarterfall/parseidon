@@ -15,6 +15,6 @@ export function checkClassAndParameterOfMethod(): Knex.JoinCallback {
 
 export function compareClassesIDToFirstClass(): Knex.JoinCallback {
     return async function() {
-        this.on("classes.id", "=","relations.first_class")
+        this.on("classes.id", "=","relations.second_class")
     }
 }
