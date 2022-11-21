@@ -11,3 +11,9 @@ export function compareMethodClassToRelationClass(): Knex.JoinCallback {
         this.on("methods.class", "r.second_class")
     }
 }
+
+export function compareClassIDToRelationSecondClass(): Knex.JoinCallback {
+    return async function() {
+        this.on("c.id","=","relations.second_class")
+    }
+}

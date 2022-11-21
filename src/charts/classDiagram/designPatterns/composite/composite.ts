@@ -9,6 +9,7 @@ export async function checkComposite(knex: Knex): Promise<Boolean> {
         .select("*")
         .where("relations.relation","realization")
         .join("classes", compareClassesIDToFirstClass())
+        .where("classes.annotations","interface")
         .join("members", checkIfClassOfMemberHasARelation())
         .whereLike("members.type", "%[]")
         .join("methods", checkClassAndParameterOfMethod())

@@ -7,4 +7,10 @@ export function compareMemberTypeToStrategyInterface(): Knex.JoinCallback {
     };
 }
 
+export function compareClassIDToMemberType(): Knex.JoinCallback {
+    return async function() {
+        this.on("c.id","=","members.type")
+    };
+}
+
 
