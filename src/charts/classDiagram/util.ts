@@ -175,6 +175,7 @@ export function getMethodName(method: string): string {
     }
 }
 
+//regex
 export function getMethodParameter(method: string): string {
     if (Math.abs(method.indexOf("(") - method.indexOf(")")) == 1) {
         return "";

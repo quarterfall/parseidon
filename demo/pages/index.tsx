@@ -30,6 +30,7 @@ export default function Home() {
         });
     }
 
+    //move post request
     const onSubmit: SubmitHandler<IFormInput> = (data: IFormInput) => {
         setCode(data.code);
         setCardVisible(!cardVisible);

@@ -13,7 +13,7 @@ export function checkClassAndParameterOfMethod(): Knex.JoinCallback {
     }
 }
 
-export function compareClassesIDToFirstClass(): Knex.JoinCallback {
+export function compareClassesIDToSecondClass(): Knex.JoinCallback {
     return async function() {
         this.on("classes.id", "=","relations.second_class")
     }
