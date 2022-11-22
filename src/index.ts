@@ -10,7 +10,24 @@ import {
     _Class,
 } from "./charts/classDiagram";
 
-export async function parseidon(input: any): Promise<
+export type ParseidonOptions = {
+    input: ClassDiagramType
+}
+
+export type ClassDiagramType = {
+    classes: any,
+    relations: MermaidRelation[]
+}
+
+export type MermaidRelation = {
+    id1: string,
+    id2: string,
+    relation: {type1: number | string, type2: number | string, lineType: number | string},
+    relationTitle1: string,
+    relationTitle2: string
+}
+
+export async function parseidon({input}: ParseidonOptions): Promise<
     | {
           classes: _Class[];
           relations: Relation[];

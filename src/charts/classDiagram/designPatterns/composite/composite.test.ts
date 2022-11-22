@@ -2,7 +2,7 @@ import { ClassDiagram } from "../../ClassDiagram";
 import { initDatabase } from "../../database";
 import { getAllDesignPatterns } from "..";
 import knex from "knex";
-import { checkClassAndParameterOfMethod, compareClassesIDToFirstClass } from "./composite.queries";
+import { checkClassAndParameterOfMethod, compareClassesIDToSecondClass } from "./composite.queries";
 import { checkIfClassOfMemberHasARelation } from "../queries";
 const classes = {
     Composite: {
@@ -125,7 +125,7 @@ describe("Composite pattern tests", () => {
         .from("relations")
         .select("relations.first_class")
         .where("relations.relation","realization")
-        .join("classes", compareClassesIDToFirstClass())
+        .join("classes", compareClassesIDToSecondClass())
         .then(res => {
             expect(res).toEqual([{first_class:"Leaf"}, {first_class:"Composite"}])
         })
@@ -136,7 +136,7 @@ describe("Composite pattern tests", () => {
         .from("relations")
         .select("relations.first_class")
         .where("relations.relation","realization")
-        .join("classes", compareClassesIDToFirstClass())
+        .join("classes", compareClassesIDToSecondClass())
         .join("members", checkIfClassOfMemberHasARelation())
         .whereLike("members.type", "%[]")
         .then(res => {
@@ -149,7 +149,7 @@ describe("Composite pattern tests", () => {
         .from("relations")
         .select("relations.first_class")
         .where("relations.relation","realization")
-        .join("classes", compareClassesIDToFirstClass())
+        .join("classes", compareClassesIDToSecondClass())
         .join("members", checkIfClassOfMemberHasARelation())
         .whereLike("members.type", "%[]")
         .join("methods", checkClassAndParameterOfMethod())
