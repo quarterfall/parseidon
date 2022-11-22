@@ -2,12 +2,13 @@ import {
     getAccessibility,
     getClassifierMember,
     getClassifierMethod,
-    getDesignPatternArray,
+    transformIntoRelations,
     getMemberName,
     getMemberReturnType,
     getMethodName,
     getMethodParameter,
     getMethodReturnType,
+    getRelationType,
 } from "./util";
 
 const debug = [
@@ -15,8 +16,8 @@ const debug = [
         id1: "Animal",
         id2: "Duck",
         relation: {
-            type1: 1,
-            type2: "none",
+            type1: 0,
+            type2: 1,
             lineType: 0,
         },
         relationTitle1: "none",
@@ -39,11 +40,17 @@ const relations = [
     {
         id: 1,
         first_class: "Duck",
-        relation: "inheritance",
+        relation: "aggregation",
         second_class: "Animal",
     },
     {
-        id: 2,
+        id:2,
+        first_class: "Animal",
+        relation: "inheritance",
+        second_class: "Duck"
+    },
+    {
+        id: 3,
         first_class: "Fish",
         relation: "inheritance",
         second_class: "Animal",
@@ -52,8 +59,13 @@ const relations = [
 
 describe("Index tests", () => {
     test("Test getDesignPattern", () => {
-        expect(getDesignPatternArray(debug)).toStrictEqual(relations);
+        expect(transformIntoRelations(debug)).toStrictEqual(relations);
     });
+
+
+    test("Test getRelationType", () => {
+        expect(getRelationType(1,0,0)).toBe("inheritance,aggregation")
+    })
 
     test("Test getAccessibility with correct string", () => {
         expect(getAccessibility("+String name")).toStrictEqual("public");
@@ -98,6 +110,6 @@ describe("Index tests", () => {
     });
 
     test("Test getMethodParamter", () => {
-        expect(getMethodParameter("-isFunny(string sentence) bool")).toStrictEqual("string");
+        expect(getMethodParameter("-isFunny(string sentence, int thing) bool")).toStrictEqual("string sentence, int thing");
     })
 });

@@ -2,12 +2,6 @@
 
 Knex.js based query builder to interpret design patterns in MermaidJS.
 
-```
-// Test string
-const input = "classDiagram\r\n  Singleton-->Singleton\r\n SecondSingleton-->SecondSingleton\r\n   Animal <|-- Duck\r\n    Animal <|-- Fish\r\n    Animal <|-- Zebra\r\n  Animal : +int age\r\n    Animal : +String gender\r\n    Animal: +isMammal()\r\n    Animal: +mate()\r\n    class Duck{\r\n        +String beakColor\r\n        +swim()\r\n        +quack()\r\n    }\r\n    class Fish{\r\n        -int sizeInFeet\r\n        -canEat()\r\n    }\r\n    class Zebra{\r\n        +bool is_wild\r\n        +run()\r\n    }\r\n    class Singleton{\r\n        -Singleton singleton$\r\n        -Singleton()\r\n        +getInstance()$ Singleton\r\n   }\r\n    class SecondSingleton{\r\n        -SecondSingleton singleton$\r\n        -SecondSingleton()\r\n        +getInstance()$ SecondSingleton\r\n   }";
-
-```
-
 # Design Patterns
 
 For the moment, ParseidonJS supports these design patterns software design patterns:
@@ -276,5 +270,44 @@ class CompoundGraphic {
 +remove(Graphic child)
 +move(int x, int y)
 +draw()
+}
+```
+
+# Database Structure
+
+The database includes 4 tables, as shown in the diagram before. This database is queried to check for design patterns and relations in the class diagram.
+
+```mermaid 
+ classDiagram
+direction LR
+Relations "1" --> "2" Classes
+Classes "1" --> "0..*" Members
+Classes "1" --> "0..*" Methods
+class Relations {
+int id
+String first_class
+String relation
+String second_class
+}
+class Classes {
+String id
+int[] members
+int[] methods
+String[] annotations
+}
+class Members {
+int id
+String type
+String name
+String accessibility
+String classifier
+}
+class Methods {
+int id
+String returnType
+String name
+String parameters
+String accessibility
+String classifier
 }
 ```
