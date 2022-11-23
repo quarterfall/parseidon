@@ -2,7 +2,7 @@ import { Stack } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import axios from "axios";
 import mermaid from "mermaid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import InputForm from "../components/InputForm";
 import LogCard from "../components/LogCard";
@@ -40,38 +40,31 @@ export interface MermaidParsedClassDiagram {
 }
 
 export default function Home() {
-    const [code, setCode] = useState("");
+    const [code, setCode] = useState("```mermaid \n classDiagram\r\n    Animal <|-- Duck\r\n    Animal <|-- Fish\r\n    Animal <|-- Zebra\r\n    Singleton --> Singleton\r\n    Animal : +int age\r\n    Animal : +String gender\r\n    Animal: +isMammal()\r\n    Animal: +mate()\r\n    class Duck{\r\n        +String beakColor\r\n        +swim()\r\n        +quack()\r\n    }\r\n    class Fish{\r\n        -int sizeInFeet\r\n        -canEat()\r\n    }\r\n    class Zebra{\r\n        +bool is_wild\r\n        +run()\r\n    }\r\n    class Singleton{\r\n      -Singleton singleton$\r\n      -Singleton()\r\n      +getInstance()$ Singleton    \r\n    }\n```");
+    const [cardVisible, setCardVisible] = useState(false);
+
     const [log, setLog] = useState<MermaidParsedClassDiagram>({
         classes: [],
         relations: [],
         designPatterns: [],
     });
 
-    const defaultValues = {
-        code: "```mermaid \n classDiagram\r\n    Animal <|-- Duck\r\n    Animal <|-- Fish\r\n    Animal <|-- Zebra\r\n    Singleton --> Singleton\r\n    Animal : +int age\r\n    Animal : +String gender\r\n    Animal: +isMammal()\r\n    Animal: +mate()\r\n    class Duck{\r\n        +String beakColor\r\n        +swim()\r\n        +quack()\r\n    }\r\n    class Fish{\r\n        -int sizeInFeet\r\n        -canEat()\r\n    }\r\n    class Zebra{\r\n        +bool is_wild\r\n        +run()\r\n    }\r\n    class Singleton{\r\n      -Singleton singleton$\r\n      -Singleton()\r\n      +getInstance()$ Singleton    \r\n    }```",
-    };
-
-    const { handleSubmit, control, watch, reset } = useForm<IFormInput>({
-        defaultValues,
-    });
-
-    const [cardVisible, setCardVisible] = useState(
-        watch("code") !== defaultValues.code
-    );
-
     function changeCardVisible() {
         setCardVisible(!cardVisible);
-        reset({
-            code: defaultValues.code || "",
-        });
     }
 
-    async function parseDiagram() {
+    const onSubmit: SubmitHandler<IFormInput> = async (data: IFormInput) => {
+        setCode(data.code);
+        setCardVisible(!cardVisible);
         console.log(code);
+        await parseDiagram();
+    };
+
+    async function parseDiagram() {
 
         mermaid.mermaidAPI
-            .parse(code.substring(10).slice(0, -3).trim())
-            .parser.yy.clear();
+        .parse(code.substring(10).slice(0, -3).trim())
+        .parser.yy.clear();
 
         let temp = mermaid.mermaidAPI.parse(
             code.substring(10).slice(0, -3).trim()
@@ -106,24 +99,17 @@ export default function Home() {
             });
     }
 
-    const onSubmit: SubmitHandler<IFormInput> = async (data: IFormInput) => {
-        setCode(data.code);
-        setCardVisible(!cardVisible);
-        await parseDiagram();
-    };
-
     return (
-        <>
+        <div>
             <Navbar />
             <Grid container spacing={2} sx={{ padding: 6 }}>
                 <Grid item xs={6}>
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <InputForm
-                            control={control}
-                            changeCardVisible={changeCardVisible}
-                            commonCardVisible={cardVisible}
-                        />
-                    </form>
+                    <InputForm
+                        commonCardVisible={cardVisible}
+                        onSubmit={onSubmit}
+                        code={code}
+                        changeCardVisible={changeCardVisible}
+                    />
                 </Grid>
                 <Grid item xs={6}>
                     {cardVisible && (
@@ -134,6 +120,6 @@ export default function Home() {
                     )}
                 </Grid>
             </Grid>
-        </>
+        </div>
     );
 }
