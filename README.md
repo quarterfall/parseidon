@@ -2,6 +2,45 @@
 
 Knex.js based query builder to interpret design patterns in MermaidJS.
 
+# Database Structure
+
+The database includes 4 tables, as shown in the diagram before. This database is queried to check for design patterns and relations in the class diagram.
+
+```mermaid
+ classDiagram
+direction LR
+Relations "1" --> "2" Classes
+Classes "1" --> "0..*" Members
+Classes "1" --> "0..*" Methods
+class Relations {
+int id
+String first_class
+String relation
+String second_class
+}
+class Classes {
+String id
+int[] members
+int[] methods
+String[] annotations
+}
+class Members {
+int id
+String type
+String name
+String accessibility
+String classifier
+}
+class Methods {
+int id
+String returnType
+String name
+String parameters
+String accessibility
+String classifier
+}
+```
+
 # Design Patterns
 
 For the moment, ParseidonJS supports these design patterns software design patterns:
@@ -273,44 +312,5 @@ class CompoundGraphic {
 +remove(Graphic child)
 +move(int x, int y)
 +draw()
-}
-```
-
-# Database Structure
-
-The database includes 4 tables, as shown in the diagram before. This database is queried to check for design patterns and relations in the class diagram.
-
-```mermaid
- classDiagram
-direction LR
-Relations "1" --> "2" Classes
-Classes "1" --> "0..*" Members
-Classes "1" --> "0..*" Methods
-class Relations {
-int id
-String first_class
-String relation
-String second_class
-}
-class Classes {
-String id
-int[] members
-int[] methods
-String[] annotations
-}
-class Members {
-int id
-String type
-String name
-String accessibility
-String classifier
-}
-class Methods {
-int id
-String returnType
-String name
-String parameters
-String accessibility
-String classifier
 }
 ```
