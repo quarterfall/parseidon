@@ -126,19 +126,18 @@ For the moment, ParseidonJS supports these design patterns software design patte
  classDiagram
 direction RL
     class Dialog {
-<<abstract>>
-+render()
-+createButton()* Button
-}
-class Button {
-<<interface>>
-+render()
-+onClick()
-}
-class WindowsDialog {
-+createButton(): Button
-}
-
+        <<abstract>>
+        +render()
+        +createButton()* Button
+    }
+    class Button {
+        <<interface>>
+        +render()
+        +onClick()
+    }
+    class WindowsDialog {
+        +createButton(): Button
+    }
 WindowsDialog --|> Dialog
 WindowsButton ..|> Button
 Dialog --> Button
@@ -146,24 +145,23 @@ Dialog --> Button
 
 ```
  classDiagram
-direction RL
+    direction RL
     class Dialog {
-<<abstract>>
-+render()
-+createButton()* Button
-}
-class Button {
-<<interface>>
-+render()
-+onClick()
-}
-class WindowsDialog {
-+createButton(): Button
-}
-
-WindowsDialog --|> Dialog
-WindowsButton ..|> Button
-Dialog --> Button
+        <<abstract>>
+        +render()
+        +createButton()* Button
+    }
+    class Button {
+        <<interface>>
+        +render()
+        +onClick()
+    }
+    class WindowsDialog {
+        +createButton(): Button
+    }
+    WindowsDialog --|> Dialog
+    WindowsButton ..|> Button
+    Dialog --> Button
 ```
 
 ## Strategy
@@ -195,21 +193,21 @@ class Context {
 
 ```
  classDiagram
-Context o-- Strategy
-Context --> Strategy
-ConcreteStrategy ..|> Strategy
-class Strategy {
-<<interface>>
-+execute(data)
-}
-class ConcreteStrategy {
-+execute(data)
-}
-class Context {
--Strategy strategy
-+setStrategy(strategy)
-+doSomething()
-}
+    Context o-- Strategy
+    Context --> Strategy
+    ConcreteStrategy ..|> Strategy
+    class Strategy{
+        <<interface>>
+        +execute(data)
+    }
+    class ConcreteStrategy{
+        +execute(data)
+    }
+    class Context{
+        -Strategy strategy
+        +setStrategy(strategy)
+        +doSomething()
+    }
 ```
 
 ## Adapter
@@ -224,17 +222,17 @@ class Context {
 SquarePegAdapter ..|> RoundPeg
 SquarePegAdapter --> SquarePeg
 
-class SquarePegAdapter {
+class SquarePegAdapter{
 -SquarePeg peg
 +SquarePegAdapter(SquarePeg peg)
 +getRadius() int
 }
-class SquarePeg {
+class SquarePeg{
 -int width
 +SquarePeg(int width)
 +getWidth() int
 }
-class RoundPeg {
+class RoundPeg{
 <<interface>>
 +getRadius() int
 }
@@ -242,23 +240,22 @@ class RoundPeg {
 
 ```
  classDiagram
-SquarePegAdapter ..|> RoundPeg
-SquarePegAdapter --> SquarePeg
-
-class SquarePegAdapter {
--SquarePeg peg
-+SquarePegAdapter(SquarePeg peg)
-+getRadius() int
-}
-class SquarePeg {
--int width
-+SquarePeg(int width)
-+getWidth() int
-}
-class RoundPeg {
-<<interface>>
-+getRadius() int
-}
+    SquarePegAdapter ..|> RoundPeg
+    SquarePegAdapter --> SquarePeg
+    class SquarePegAdapter{
+        -SquarePeg peg
+        +SquarePegAdapter(SquarePeg peg)
+        +getRadius() int
+    }
+    class SquarePeg{
+        -int width
+        +SquarePeg(int width)
+        +getWidth() int
+    }
+    class RoundPeg{
+        <<interface>>
+        +getRadius() int
+    }
 ```
 
 ## Composite
@@ -294,23 +291,23 @@ class CompoundGraphic {
 
 ```
  classDiagram
-Dot ..|> Graphic
-CompoundGraphic ..|> Graphic
-class Graphic {
-<<interface>>
-+move(int x,int y)
-+draw()
-}
-class Dot {
-+Dot(int x, int y)
-+move(int x, int y)
-+draw()
-}
-class CompoundGraphic {
--Graphic[] children
-+add(Graphic child)
-+remove(Graphic child)
-+move(int x, int y)
-+draw()
-}
+    Dot ..|> Graphic
+    CompoundGraphic ..|> Graphic
+    class Graphic {
+        <<interface>>
+        +move(int x,int y)
+        +draw()
+    }
+    class Dot {
+        +Dot(int x, int y)
+        +move(int x, int y)
+        +draw()
+    }
+    class CompoundGraphic {
+        -Graphic[] children
+        +add(Graphic child)
+        +remove(Graphic child)
+        +move(int x, int y)
+        +draw()
+    }
 ```
