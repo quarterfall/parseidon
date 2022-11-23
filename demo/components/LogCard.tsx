@@ -2,9 +2,8 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 
 const LogCard = ({ log }: any) => {
-
     return (
-        <Card sx={{ minWidth: 275, mt: "10px" }}>
+        <Card sx={{ minWidth: 275 }}>
             <CardContent>
                 <div>
                     <h3>Classes</h3>

@@ -9,7 +9,7 @@ export interface MermaidRendererProps {
 
 const MermaidRenderer = ({ chart }: MermaidRendererProps) => {
     return (
-        <Card sx={{ minWidth: 275, mt: "60px", minHeight: "385px" }}>
+        <Card sx={{ minWidth: 275, minHeight: "385px" }}>
             <CardContent sx={{ justifyContent: "center" }}>
                 <ReactMarkdown
                     // eslint-disable-next-line
