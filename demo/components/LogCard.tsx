@@ -1,109 +1,59 @@
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { MermaidRendererProps } from "./MermaidRenderer";
-import mermaid from "mermaid";
 
-const LogCard = ({ chart }: MermaidRendererProps) => {
-    const [classDiagram, setClassDiagram] = useState<{
-        classes: any[];
-        relations: any[];
-        designPatterns: any[];
-    }>({
-        classes: [],
-        relations: [],
-        designPatterns: [],
-    });
-    try {
-        mermaid.mermaidAPI
-            .parse(chart.substring(10).slice(0, -3).trim())
-            .parser.yy.clear();
+const LogCard = ({ log }: any) => {
 
-        let temp = mermaid.mermaidAPI.parse(
-            chart.substring(10).slice(0, -3).trim()
-        ).parser.yy;
-
-        console.log({
-            classes: temp.getClasses(),
-            relations: temp.getRelations(),
-        });
-
-        useEffect(() => {
-            axios
-                .post(
-                    "http://localhost:3000/api/post/parse",
-                    {
-                        classes: temp.getClasses(),
-                        relations: temp.getRelations(),
-                    },
-                    {
-                        headers: { "Content-Type": "application/json" },
-                    }
-                )
-                .then((res) => {
-                    setClassDiagram(res.data);
-                    console.log(res.data);
-                })
-                .catch((e) => console.log(e));
-        }, []);
-
-        console.log(classDiagram);
-
-        return (
-            <Card sx={{ minWidth: 275, mt: "10px" }}>
-                <CardContent>
+    return (
+        <Card sx={{ minWidth: 275, mt: "10px" }}>
+            <CardContent>
+                <div>
+                    <h3>Classes</h3>
+                    <ul>
+                        {log.classes.map((_class: any) => (
+                            <li key={`class_${_class.id}`}>{_class.id}</li>
+                        ))}
+                    </ul>
+                </div>
+                {log.relations.length > 0 ? (
                     <div>
-                        <h3>Classes</h3>
+                        <h3>Relations</h3>
                         <ul>
-                            {classDiagram.classes.map((_class) => (
-                                <li>{_class.id}</li>
+                            {log.relations.map((relation: any) => (
+                                <li key={`relation_${relation.id}`}>
+                                    Class {relation.first_class} has{" "}
+                                    {relation.relation} with{" "}
+                                    {relation.second_class}
+                                </li>
+                            ))}
+                        </ul>{" "}
+                    </div>
+                ) : (
+                    <h3>No relations</h3>
+                )}
+                {log.designPatterns.length > 0 ? (
+                    <div>
+                        <h3>Design Patterns</h3>
+                        <ul>
+                            {log.designPatterns.map((pattern: any) => (
+                                <div key={`pattern_${pattern.id}`}>
+                                    {pattern.className === "all" && (
+                                        <li>{pattern.pattern} pattern</li>
+                                    )}
+                                    {pattern.className !== "all" && (
+                                        <li>
+                                            Class {pattern.className} is a{" "}
+                                            {pattern.pattern}
+                                        </li>
+                                    )}
+                                </div>
                             ))}
                         </ul>
                     </div>
-                    {classDiagram.relations.length > 0 ? (
-                        <div>
-                            <h3>Relations</h3>
-                            <ul>
-                                {classDiagram.relations.map((relation) => (
-                                    <li>
-                                        Class {relation.first_class} has{" "}
-                                        {relation.relation} with{" "}
-                                        {relation.second_class}
-                                    </li>
-                                ))}
-                            </ul>{" "}
-                        </div>
-                    ) : (
-                        <h3>No relations</h3>
-                    )}
-                    {classDiagram.designPatterns.length > 0 ? (
-                        <div>
-                            <h3>Design Patterns</h3>
-                            <ul>
-                                {classDiagram.designPatterns.map((pattern) => (
-                                    <div>
-                                        {pattern.className === "all" && (
-                                            <li>{pattern.pattern} pattern</li>
-                                        )}
-                                        {pattern.className !== "all" && (
-                                            <li>
-                                                Class {pattern.className} is a{" "}
-                                                {pattern.pattern}
-                                            </li>
-                                        )}
-                                    </div>
-                                ))}
-                            </ul>
-                        </div>
-                    ) : (
-                        <h3>No design patterns</h3>
-                    )}
-                </CardContent>
-            </Card>
-        );
-    } catch (e) {
-        console.log(e);
-    }
+                ) : (
+                    <h3>No design patterns</h3>
+                )}
+            </CardContent>
+        </Card>
+    );
 };
 export default LogCard;

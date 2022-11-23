@@ -19,30 +19,22 @@ export async function getAllDesignPatterns(
         }
     }
 
-    await checkFactory(conn).then(res => {
-        if (res) {
-            designPatterns.push({id:patternId++, className: "all", pattern: "factory"})
-        }
-    });
+    if (await checkFactory(conn)) {
+        designPatterns.push({id:patternId++, className: "all", pattern: "factory"})
+    }
 
-    await checkStrategy(conn).then(res => {
-        if (res) {
-            designPatterns.push({id:patternId++, className: "all", pattern: "strategy"})
-        }
-    });
+    if (await checkStrategy(conn)) {
+        designPatterns.push({id:patternId++, className: "all", pattern: "strategy"})
+    }
+   
+    if (await checkAdapter(conn)) {
+        designPatterns.push({id:patternId++, className: "all", pattern: "adapter"})
+    }
+    
+    if (await checkComposite(conn)) {
+        designPatterns.push({id:patternId++, className: "all", pattern: "composite"})
 
-    await checkAdapter(conn).then(res => {
-        if (res) {
-            designPatterns.push({id:patternId++, className: "all", pattern: "adapter"})
-        }
-    })
-
-    await checkComposite(conn).then(res => {
-        if (res) {
-            designPatterns.push({id:patternId++, className: "all", pattern: "composite"})
-        }
-    })
-
+    }
 
     return designPatterns;
 

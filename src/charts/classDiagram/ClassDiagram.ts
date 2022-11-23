@@ -1,4 +1,4 @@
-import { getDesignPatternArray } from "./util";
+import { transformIntoRelations } from "./util";
 
 export type Relation = {
     id: number;
@@ -29,9 +29,9 @@ export type Method = {
     id: number;
     returnType: string;
     name: string;
-    keyword: string;
     accessibility: string;
     classifier: string;
+    parameters: string[]
 };
 
 export type DesignPattern = {
@@ -52,7 +52,7 @@ export class ClassDiagram {
             delete _class.domId;
         });
         this.debug = debug;
-        this.relations = getDesignPatternArray(this.debug);
+        this.relations = transformIntoRelations(this.debug);
         console.log(
             `Parsed class diagram with ${this.relations.length} relations`
         );

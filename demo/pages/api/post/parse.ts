@@ -18,5 +18,4 @@ export default async function parseHandler(
     }
 
     return res.status(200).json(parsedChart)
-        
 }

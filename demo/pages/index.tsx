@@ -1,5 +1,5 @@
 import Grid from "@mui/material/Grid";
-
+import axios from "axios";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import InputForm from "../components/InputForm";
@@ -7,9 +7,44 @@ import LogCard from "../components/LogCard";
 import MermaidRenderer from "../components/MermaidRenderer";
 import Navbar from "../components/Navbar";
 import { IFormInput } from "../interfaces/IFormInput";
+import mermaid from "mermaid";
+
+export type DesignPattern = {
+    id: number;
+    className: string;
+    pattern: string;
+};
+
+export type Relation = {
+    id: number;
+    first_class: string;
+    relation: string;
+    second_class: string;
+};
+
+export type _Class = {
+    id: string;
+    type: string;
+    members: string[];
+    methods: string[];
+    annotations: string[];
+    domId?: string;
+    cssClasses?: string[];
+};
+
+export interface MermaidParsedClassDiagram {
+    classes: _Class[],
+    designPatterns: DesignPattern[],
+    relations: Relation[]
+}
 
 export default function Home() {
     const [code, setCode] = useState("");
+    const [log, setLog] = useState<MermaidParsedClassDiagram>({
+        classes: [],
+        relations: [],
+        designPatterns: [],
+    });
 
     const defaultValues = {
         code: "```mermaid \n classDiagram\r\n    Animal <|-- Duck\r\n    Animal <|-- Fish\r\n    Animal <|-- Zebra\r\n    Singleton --> Singleton\r\n    Animal : +int age\r\n    Animal : +String gender\r\n    Animal: +isMammal()\r\n    Animal: +mate()\r\n    class Duck{\r\n        +String beakColor\r\n        +swim()\r\n        +quack()\r\n    }\r\n    class Fish{\r\n        -int sizeInFeet\r\n        -canEat()\r\n    }\r\n    class Zebra{\r\n        +bool is_wild\r\n        +run()\r\n    }\r\n    class Singleton{\r\n      -Singleton singleton$\r\n      -Singleton()\r\n      +getInstance()$ Singleton    \r\n    }```",
@@ -30,9 +65,51 @@ export default function Home() {
         });
     }
 
-    const onSubmit: SubmitHandler<IFormInput> = (data: IFormInput) => {
+    async function parseDiagram() {
+
+        console.log(code);
+
+        mermaid.mermaidAPI
+            .parse(code.substring(10).slice(0, -3).trim())
+            .parser.yy.clear();
+
+        let temp = mermaid.mermaidAPI.parse(
+            code.substring(10).slice(0, -3).trim()
+        ).parser.yy;
+
+        console.log({
+            classes: temp.getClasses(),
+            relations: temp.getRelations(),
+        });
+        axios
+            .post(
+                "https://europe-west1-quarterfall.cloudfunctions.net/parseidon",
+                {
+                    
+                   input: {
+                            classes: temp.getClasses(),
+                            relations: temp.getRelations(),
+                        }
+                    
+                },
+                {
+                    headers: {
+                        "Access-Control-Allow-Origin": "*",
+                        "Content-Type": "application/json",
+                    },
+                }
+            )
+            .then((res) => {
+                setLog(res.data);
+                console.log(res.data);
+            })
+            .catch((e) => console.log(e));
+    }
+
+    const onSubmit: SubmitHandler<IFormInput> = async (data: IFormInput) => {
         setCode(data.code);
         setCardVisible(!cardVisible);
+        await parseDiagram();
     };
 
     return (
@@ -52,7 +129,7 @@ export default function Home() {
                     {cardVisible && (
                         <div>
                             <MermaidRenderer chart={code} />
-                            <LogCard chart={code} />
+                            <LogCard log={log} />
                         </div>
                     )}
                 </Grid>

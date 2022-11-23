@@ -1,24 +1,26 @@
 import { Knex } from "knex";
 import { checkIfClassOfMemberHasARelation } from "../queries";
-import { checkClassAndParameterOfMethod, compareClassesIDToFirstClass } from "./composite.queries";
+import {
+    checkClassAndParameterOfMethod,
+    compareClassesIDToSecondClass,
+} from "./composite.queries";
 
 export async function checkComposite(knex: Knex): Promise<Boolean> {
-
-    return knex
-        .from("relations")
-        .select("*")
-        .where("relations.relation","realization")
-        .join("classes", compareClassesIDToFirstClass())
-        .where("classes.annotations","interface")
-        .join("members", checkIfClassOfMemberHasARelation())
-        .whereLike("members.type", "%[]")
-        .join("methods", checkClassAndParameterOfMethod())
-        .then(res => {
-            if (res.length == 2) {
-                return true;
-            }
-            return false;
-        })
-        
-
+    //get an implementation relation
+    return Boolean(
+        (
+            await knex
+                .from("relations")
+                .select("*")
+                .where("relations.relation", "realization")
+                //get the implemented interface (component)
+                .join("classes", compareClassesIDToSecondClass())
+                .where("classes.annotations", "interface")
+                //check if a member of the class (composite) implementing the interface is an array of interface type
+                .join("members", checkIfClassOfMemberHasARelation())
+                .whereLike("members.type", "%[]")
+                //check for two methods containing as a parameter an interface instance
+                .join("methods", checkClassAndParameterOfMethod())
+        ).length
+    );
 }
