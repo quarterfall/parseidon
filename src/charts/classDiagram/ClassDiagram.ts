@@ -31,7 +31,7 @@ export type Method = {
     name: string;
     accessibility: string;
     classifier: string;
-    parameters: string[]
+    parameters: string[];
 };
 
 export type DesignPattern = {
@@ -47,7 +47,7 @@ export class ClassDiagram {
 
     constructor(classes: {}, debug: any[]) {
         this.classes = Object.values(classes);
-        this.classes.forEach((_class) => {
+        (this.classes || []).forEach((_class) => {
             delete _class.cssClasses;
             delete _class.domId;
         });

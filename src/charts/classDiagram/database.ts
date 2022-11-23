@@ -11,7 +11,6 @@ import {
     getMethodReturnType,
 } from "./util";
 
-
 export async function initDatabase(conn: Knex, classDiagram: ClassDiagram) {
     await createMethodsTable(conn);
     await createMembersTable(conn);
@@ -25,7 +24,6 @@ export async function initDatabase(conn: Knex, classDiagram: ClassDiagram) {
 
     //insert relations
     await insertArray(conn, "relations", classDiagram.getRelations());
-
 }
 
 export async function getAllRelations(conn: Knex): Promise<Relation[]> {
@@ -139,8 +137,8 @@ export async function insertMembersAndMethods(
     classDiagram: ClassDiagram
 ) {
     //insert methods and members
-    classDiagram.getClasses().forEach((_class) => {
-        _class.members.forEach(async (member) => {
+    (classDiagram.getClasses() || []).forEach((_class) => {
+        (_class?.members || []).forEach(async (member) => {
             await conn("members").insert({
                 type: getMemberReturnType(member),
                 name: getMemberName(member),
@@ -150,7 +148,7 @@ export async function insertMembersAndMethods(
             });
         });
 
-        _class.methods.forEach(async (method) => {
+        (_class?.methods || []).forEach(async (method) => {
             await conn("methods").insert({
                 returnType:
                     getMethodReturnType(method) !== ""
