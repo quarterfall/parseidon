@@ -1,21 +1,54 @@
 import { Button, CardActions } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+import axios from "axios";
+import mermaid from "mermaid";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { IFormInput } from "../interfaces/IFormInput";
 import { TextFieldController } from "./TextFieldController";
 
+export type DesignPattern = {
+    id: number;
+    className: string;
+    pattern: string;
+};
+
+export type Relation = {
+    id: number;
+    first_class: string;
+    relation: string;
+    second_class: string;
+};
+
+export type _Class = {
+    id: string;
+    type: string;
+    members: string[];
+    methods: string[];
+    annotations: string[];
+    domId?: string;
+    cssClasses?: string[];
+};
+
+export interface MermaidParsedClassDiagram {
+    classes: _Class[];
+    designPatterns: DesignPattern[];
+    relations: Relation[];
+}
+
 export interface InputFormProps {
     commonCardVisible: boolean;
-    onSubmit: SubmitHandler<IFormInput>;
     code: string;
+    setCode: (_: string) => void;
+    setLog: (_: MermaidParsedClassDiagram) => void;
     changeCardVisible(): void;
 }
 const InputForm = ({
     commonCardVisible,
-    onSubmit,
     code,
+    setCode,
+    setLog,
     changeCardVisible,
 }: InputFormProps) => {
     // Move useForm here
@@ -40,6 +73,45 @@ const InputForm = ({
         });
         setSubmitButtonDisabled(false);
     }
+
+    async function parseDiagram() {
+        let parsedInput = mermaid.mermaidAPI.parse(
+            code.substring(10).slice(0, -3).trim() || ""
+        ).parser.yy;
+
+        axios
+            .post(
+                "https://europe-west1-quarterfall.cloudfunctions.net/parseidon",
+                {
+                    input: {
+                        classes: parsedInput.getClasses(),
+                        relations: parsedInput.getRelations(),
+                    },
+                },
+                {
+                    headers: {
+                        "Content-Type":
+                            "application/x-www-form-urlencoded; charset=UTF-8",
+                    },
+                }
+            )
+            .then((res) => {
+                console.log(res.data);
+                setLog(res.data);
+            })
+            .catch((e) => {
+                console.log(e.message);
+            });
+    }
+
+    const onSubmit: SubmitHandler<IFormInput> = async (data: IFormInput) => {
+        if (!data.code) {
+            return;
+        }
+        setCode(data?.code);
+        changeCardVisible();
+        await parseDiagram();
+    };
 
     const onHandleSubmit = async (data: IFormInput) => {
         onSubmit(data);

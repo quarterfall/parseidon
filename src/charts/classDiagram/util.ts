@@ -3,39 +3,44 @@ import { Relation } from "./ClassDiagram";
 export function transformIntoRelations(debug: any[]): Relation[] {
     let structuredRelations: Relation[] = [];
     let i: number = 1;
-    debug.forEach((rel) => {
-        const relationType = getRelationType(rel.relation.type1,rel.relation.type2,rel.relation.lineType);
+    (debug || []).forEach((rel) => {
+        const relationType = getRelationType(
+            rel.relation.type1,
+            rel.relation.type2,
+            rel.relation.lineType
+        );
         if (relationType.includes(",")) {
             structuredRelations.push({
                 id: i++,
-                first_class:
-                    rel.id2,
-                relation: relationType.substring(0,relationType.indexOf(",")),
-                second_class:
-                        rel.id1,
+                first_class: rel.id2,
+                relation: relationType.substring(0, relationType.indexOf(",")),
+                second_class: rel.id1,
             });
             structuredRelations.push({
                 id: i++,
-                first_class:
-                    rel.id1,
-                relation: relationType.substring(relationType.indexOf(",")+1,relationType.length),
-                second_class:
-                    rel.id2,
+                first_class: rel.id1,
+                relation: relationType.substring(
+                    relationType.indexOf(",") + 1,
+                    relationType.length
+                ),
+                second_class: rel.id2,
             });
         } else {
-        structuredRelations.push({
-            id: i++,
-            first_class:
-                rel.relation.type2 === "none" && rel.relation.type1 !== "none"
-                    ? rel.id2
-                    : rel.id1,
-            relation: relationType,
-            second_class:
-                rel.relation.type2 === "none" && rel.relation.type1 !== "none"
-                    ? rel.id1
-                    : rel.id2,
-        });
-    }
+            structuredRelations.push({
+                id: i++,
+                first_class:
+                    rel.relation.type2 === "none" &&
+                    rel.relation.type1 !== "none"
+                        ? rel.id2
+                        : rel.id1,
+                relation: relationType,
+                second_class:
+                    rel.relation.type2 === "none" &&
+                    rel.relation.type1 !== "none"
+                        ? rel.id1
+                        : rel.id2,
+            });
+        }
     });
     return structuredRelations;
 }
@@ -57,7 +62,11 @@ export function getRelationType(
     } else if (type1.toString() !== "none" && type2.toString() === "none") {
         return conversion(type1.toString(), lineType.toString());
     } else {
-        return conversion(type1.toString(), lineType.toString()) + "," + conversion(type2.toString(), lineType.toString()); 
+        return (
+            conversion(type1.toString(), lineType.toString()) +
+            "," +
+            conversion(type2.toString(), lineType.toString())
+        );
     }
     return "";
 }

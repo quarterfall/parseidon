@@ -1,14 +1,11 @@
 import { Stack } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import axios from "axios";
 import mermaid from "mermaid";
 import { useEffect, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
 import InputForm from "../components/InputForm";
 import LogCard from "../components/LogCard";
 import MermaidRenderer from "../components/MermaidRenderer";
 import Navbar from "../components/Navbar";
-import { IFormInput } from "../interfaces/IFormInput";
 
 export type DesignPattern = {
     id: number;
@@ -40,7 +37,9 @@ export interface MermaidParsedClassDiagram {
 }
 
 export default function Home() {
-    const [code, setCode] = useState("```mermaid \n classDiagram\r\n    Animal <|-- Duck\r\n    Animal <|-- Fish\r\n    Animal <|-- Zebra\r\n    Singleton --> Singleton\r\n    Animal : +int age\r\n    Animal : +String gender\r\n    Animal: +isMammal()\r\n    Animal: +mate()\r\n    class Duck{\r\n        +String beakColor\r\n        +swim()\r\n        +quack()\r\n    }\r\n    class Fish{\r\n        -int sizeInFeet\r\n        -canEat()\r\n    }\r\n    class Zebra{\r\n        +bool is_wild\r\n        +run()\r\n    }\r\n    class Singleton{\r\n      -Singleton singleton$\r\n      -Singleton()\r\n      +getInstance()$ Singleton    \r\n    }\n```");
+    const [code, setCode] = useState(
+        "```mermaid \n classDiagram\r\n    Animal <|-- Duck\r\n    Animal <|-- Fish\r\n    Animal <|-- Zebra\r\n    Singleton --> Singleton\r\n    Animal : +int age\r\n    Animal : +String gender\r\n    Animal: +isMammal()\r\n    Animal: +mate()\r\n    class Duck{\r\n        +String beakColor\r\n        +swim()\r\n        +quack()\r\n    }\r\n    class Fish{\r\n        -int sizeInFeet\r\n        -canEat()\r\n    }\r\n    class Zebra{\r\n        +bool is_wild\r\n        +run()\r\n    }\r\n    class Singleton{\r\n      -Singleton singleton$\r\n      -Singleton()\r\n      +getInstance()$ Singleton    \r\n    }\n```"
+    );
     const [cardVisible, setCardVisible] = useState(false);
 
     const [log, setLog] = useState<MermaidParsedClassDiagram>({
@@ -53,51 +52,11 @@ export default function Home() {
         setCardVisible(!cardVisible);
     }
 
-    const onSubmit: SubmitHandler<IFormInput> = async (data: IFormInput) => {
-        setCode(data.code);
-        setCardVisible(!cardVisible);
-        console.log(code);
-        await parseDiagram();
-    };
-
-    async function parseDiagram() {
-
+    useEffect(() => {
         mermaid.mermaidAPI
-        .parse(code.substring(10).slice(0, -3).trim())
-        .parser.yy.clear();
-
-        let temp = mermaid.mermaidAPI.parse(
-            code.substring(10).slice(0, -3).trim()
-        ).parser.yy;
-
-        console.log({
-            classes: temp.getClasses(),
-            relations: temp.getRelations(),
-        });
-        axios
-            .post(
-                "https://europe-west1-quarterfall.cloudfunctions.net/parseidon",
-                {
-                    input: {
-                        classes: temp.getClasses(),
-                        relations: temp.getRelations(),
-                    },
-                },
-                {
-                    headers: {
-                        "Content-Type":
-                            "application/x-www-form-urlencoded; charset=UTF-8",
-                    },
-                }
-            )
-            .then((res) => {
-                setLog(res.data);
-                console.log(res.data);
-            })
-            .catch((e) => {
-                console.log(e.message);
-            });
-    }
+            .parse(code.substring(10).slice(0, -3).trim())
+            .parser.yy.clear();
+    }, [code]);
 
     return (
         <div>
@@ -106,8 +65,9 @@ export default function Home() {
                 <Grid item xs={6}>
                     <InputForm
                         commonCardVisible={cardVisible}
-                        onSubmit={onSubmit}
                         code={code}
+                        setCode={setCode}
+                        setLog={setLog}
                         changeCardVisible={changeCardVisible}
                     />
                 </Grid>
