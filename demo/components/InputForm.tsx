@@ -1,4 +1,4 @@
-import { Box, Button } from "@mui/material";
+import { Button, CardActions } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import { Control } from "react-hook-form";
@@ -21,8 +21,6 @@ const InputForm = ({
                 sx={{
                     minWidth: 200,
                     maxWidth: 545,
-                    ml: "100px",
-                    mt: "60px",
                     position: "relative",
                 }}
             >
@@ -33,32 +31,27 @@ const InputForm = ({
                         label="MermaidJS"
                         variant="outlined"
                     />
-                    <Box
-                        sx={{
-                            display: "flex",
-                            justifyContent: "flex-end",
-                            alignItems: "flex-end",
-                            mt: "20px",
-                        }}
-                    >
-                        <Button
-                            variant="contained"
-                            data-cy="send_Button"
-                            type="submit"
-                        >
-                            Send
-                        </Button>
-                        <Button
-                            onClick={changeCardVisible}
-                            variant="text"
-                            data-cy="reset_Button"
-                            sx={{ ml: "10px" }}
-                            disabled = {commonCardVisible ? false : true}
-                        >
-                            Reset
-                        </Button>
-                    </Box>
                 </CardContent>
+                <CardActions
+                    sx={{ justifyContent: "flex-end", marginRight: 2 }}
+                >
+                    <Button
+                        variant="contained"
+                        data-cy="send_Button"
+                        type="submit"
+                    >
+                        Send
+                    </Button>
+                    <Button
+                        onClick={changeCardVisible}
+                        variant="text"
+                        data-cy="reset_Button"
+                        sx={{ ml: "10px" }}
+                        disabled={commonCardVisible ? false : true}
+                    >
+                        Reset
+                    </Button>
+                </CardActions>
             </Card>
         </>
     );

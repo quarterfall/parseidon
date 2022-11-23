@@ -1,5 +1,7 @@
+import { Stack } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import axios from "axios";
+import mermaid from "mermaid";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import InputForm from "../components/InputForm";
@@ -7,7 +9,6 @@ import LogCard from "../components/LogCard";
 import MermaidRenderer from "../components/MermaidRenderer";
 import Navbar from "../components/Navbar";
 import { IFormInput } from "../interfaces/IFormInput";
-import mermaid from "mermaid";
 
 export type DesignPattern = {
     id: number;
@@ -33,9 +34,9 @@ export type _Class = {
 };
 
 export interface MermaidParsedClassDiagram {
-    classes: _Class[],
-    designPatterns: DesignPattern[],
-    relations: Relation[]
+    classes: _Class[];
+    designPatterns: DesignPattern[];
+    relations: Relation[];
 }
 
 export default function Home() {
@@ -66,7 +67,6 @@ export default function Home() {
     }
 
     async function parseDiagram() {
-
         console.log(code);
 
         mermaid.mermaidAPI
@@ -85,17 +85,9 @@ export default function Home() {
             .post(
                 "https://europe-west1-quarterfall.cloudfunctions.net/parseidon",
                 {
-                    
-                   input: {
-                            classes: temp.getClasses(),
-                            relations: temp.getRelations(),
-                        }
-                    
-                },
-                {
-                    headers: {
-                        "Access-Control-Allow-Origin": "*",
-                        "Content-Type": "application/json",
+                    input: {
+                        classes: temp.getClasses(),
+                        relations: temp.getRelations(),
                     },
                 }
             )
@@ -103,7 +95,9 @@ export default function Home() {
                 setLog(res.data);
                 console.log(res.data);
             })
-            .catch((e) => console.log(e));
+            .catch((e) => {
+                console.log(e.message);
+            });
     }
 
     const onSubmit: SubmitHandler<IFormInput> = async (data: IFormInput) => {
@@ -115,7 +109,7 @@ export default function Home() {
     return (
         <>
             <Navbar />
-            <Grid container columnSpacing={-20} rowSpacing={3}>
+            <Grid container spacing={2} sx={{ paddingX: 10, marginTop: 6 }}>
                 <Grid item xs={6}>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <InputForm
@@ -127,10 +121,10 @@ export default function Home() {
                 </Grid>
                 <Grid item xs={6}>
                     {cardVisible && (
-                        <div>
+                        <Stack spacing={1}>
                             <MermaidRenderer chart={code} />
                             <LogCard log={log} />
-                        </div>
+                        </Stack>
                     )}
                 </Grid>
             </Grid>
