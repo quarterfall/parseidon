@@ -15,36 +15,36 @@ For the moment, ParseidonJS supports these design patterns software design patte
 3. Singleton class has public static method returning the singleton class instance
 4. There is no instance of the singleton class in any other class
 
+```mermaid
+ classDiagram
+    Animal <|-- Duck
+    Animal <|-- Fish
+    Animal <|-- Zebra
+    Singleton --> Singleton
+    Animal : +int age
+    Animal : +String gender
+    Animal: +isMammal()
+    Animal: +mate()
+    class Duck{
+        +String beakColor
+        +swim()
+        +quack()
+    }
+    class Fish{
+        -int sizeInFeet
+        -canEat()
+    }
+    class Zebra{
+        +bool is_wild
+        +run()
+    }
+    class Singleton{
+      -Singleton singleton$
+      -Singleton()
+      +getInstance()$ Singleton
+    }
+```
 
-```mermaid 
- classDiagram
-    Animal <|-- Duck
-    Animal <|-- Fish
-    Animal <|-- Zebra
-    Singleton --> Singleton
-    Animal : +int age
-    Animal : +String gender
-    Animal: +isMammal()
-    Animal: +mate()
-    class Duck{
-        +String beakColor
-        +swim()
-        +quack()
-    }
-    class Fish{
-        -int sizeInFeet
-        -canEat()
-    }
-    class Zebra{
-        +bool is_wild
-        +run()
-    }
-    class Singleton{
-      -Singleton singleton$
-      -Singleton()
-      +getInstance()$ Singleton    
-    }
-```
 ```
  classDiagram
     Animal <|-- Duck
@@ -71,7 +71,7 @@ For the moment, ParseidonJS supports these design patterns software design patte
     class Singleton{
       -Singleton singleton$
       -Singleton()
-      +getInstance()$ Singleton    
+      +getInstance()$ Singleton
     }
 ```
 
@@ -81,31 +81,10 @@ For the moment, ParseidonJS supports these design patterns software design patte
 
 1. Have a "product" interface implemented by at least 1 "product'
 2. Have an abstract "creator" class with abstract method that returns "product" interface and at least 1 other method
-3. Have at least one class inheriting from "creator" class 
+3. Have at least one class inheriting from "creator" class
 
-```mermaid 
- classDiagram 
-direction RL
-    class Dialog {
-<<abstract>>
-+render()
-+createButton()* Button
-}
-class Button {
-<<interface>>
-+render()
-+onClick()
-}
-class WindowsDialog {
-+createButton(): Button
-}
-
-WindowsDialog --|> Dialog
-WindowsButton ..|> Button
-Dialog --> Button
-```
-```
- classDiagram 
+```mermaid
+ classDiagram
 direction RL
     class Dialog {
 <<abstract>>
@@ -126,7 +105,29 @@ WindowsButton ..|> Button
 Dialog --> Button
 ```
 
-## Strategy 
+```
+ classDiagram
+direction RL
+    class Dialog {
+<<abstract>>
++render()
++createButton()* Button
+}
+class Button {
+<<interface>>
++render()
++onClick()
+}
+class WindowsDialog {
++createButton(): Button
+}
+
+WindowsDialog --|> Dialog
+WindowsButton ..|> Button
+Dialog --> Button
+```
+
+## Strategy
 
 ### Steps
 
@@ -134,7 +135,7 @@ Dialog --> Button
 2. Context class with private Strategy interface member
 3. One class implementing the Strategy interface
 
-```mermaid 
+```mermaid
  classDiagram
 Context o-- Strategy
 Context --> Strategy
@@ -150,9 +151,10 @@ class Context {
 -Strategy strategy
 +setStrategy(strategy)
 +doSomething()
-}    
+}
 ```
-``` 
+
+```
  classDiagram
 Context o-- Strategy
 Context --> Strategy
@@ -168,7 +170,7 @@ class Context {
 -Strategy strategy
 +setStrategy(strategy)
 +doSomething()
-}    
+}
 ```
 
 ## Adapter
@@ -178,7 +180,7 @@ class Context {
 1. Adapter class that associates with the service and implements the client interface
 2. Service class, the client can't use it directly. Adapter class has an instance of it
 
-```mermaid 
+```mermaid
  classDiagram
 SquarePegAdapter ..|> RoundPeg
 SquarePegAdapter --> SquarePeg
@@ -198,6 +200,7 @@ class RoundPeg {
 +getRadius() int
 }
 ```
+
 ```
  classDiagram
 SquarePegAdapter ..|> RoundPeg
@@ -227,8 +230,7 @@ class RoundPeg {
 2. Two classes implementing the Component interface (Leaf and Container)
 3. One class(Container) with an array of interface type, methods to add and remove members of the array
 
-
-```mermaid 
+```mermaid
  classDiagram
 Dot ..|> Graphic
 CompoundGraphic ..|> Graphic
@@ -250,7 +252,8 @@ class CompoundGraphic {
 +draw()
 }
 ```
-``` 
+
+```
  classDiagram
 Dot ..|> Graphic
 CompoundGraphic ..|> Graphic
@@ -270,5 +273,44 @@ class CompoundGraphic {
 +remove(Graphic child)
 +move(int x, int y)
 +draw()
+}
+```
+
+# Database Structure
+
+The database includes 4 tables, as shown in the diagram before. This database is queried to check for design patterns and relations in the class diagram.
+
+```mermaid
+ classDiagram
+direction LR
+Relations "1" --> "2" Classes
+Classes "1" --> "0..*" Members
+Classes "1" --> "0..*" Methods
+class Relations {
+int id
+String first_class
+String relation
+String second_class
+}
+class Classes {
+String id
+int[] members
+int[] methods
+String[] annotations
+}
+class Members {
+int id
+String type
+String name
+String accessibility
+String classifier
+}
+class Methods {
+int id
+String returnType
+String name
+String parameters
+String accessibility
+String classifier
 }
 ```

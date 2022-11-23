@@ -14,7 +14,6 @@ export async function getAllDesignPatterns(
     let classes: _Class[] = await getAll(conn, "classes");
     let patternId: number = 1;
     for (let i=0;i<classes.length;i++) {
-        console.log(classes[i].id + " " + (await checkSingletonByName(conn, classes[i].id)))
         if ((await checkSingletonByName(conn, classes[i].id))) {
             designPatterns.push({id:patternId++, className: classes[i].id, pattern: "singleton"})
         }

@@ -9,22 +9,15 @@ import {
 
 export async function checkSingletonByName(knex: Knex, className: string) {
     
-    return getPrivateStaticSingletonInstance(knex, className).then((res) => {
-        if (!res.length) {
-            return false;
-        }
-        return getPrivateConstructor(knex, className).then((res) => {
-            if (!res.length) {
-                return false;
+    if ((await getPrivateStaticSingletonInstance(knex, className)).length) {
+        if ((await getPrivateConstructor(knex, className)).length) {
+            if ((await getPublicMethodReturningSingleton(knex, className)).length) {
+                return !(await getSingletonInstancesFromOtherClasses(knex, className)).length
             }
-            return getPublicMethodReturningSingleton(knex, className).then((res) => {
-                if (!res.length) {
-                    return false;
-                }
-                return getSingletonInstancesFromOtherClasses(knex, className).then((res) => {
-                    return !res.length;
-                });
-            });
-        });
-    });
+        }
+    }
+    return false;
 }
+
+
+

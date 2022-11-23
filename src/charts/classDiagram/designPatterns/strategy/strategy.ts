@@ -13,7 +13,7 @@ import {
 export async function checkStrategy(knex: Knex): Promise<Boolean> {
     //get setter methods from a class (Context) with an aggregation relation
     return Boolean(
-        (  // Class A o--> Class B
+        (  
             await knex
                 .from("methods")
                 .select("*")

@@ -1,54 +1,7 @@
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { MermaidRendererProps } from "./MermaidRenderer";
-import mermaid from "mermaid";
 
-const LogCard = ({ chart }: MermaidRendererProps) => {
-    const [classDiagram, setClassDiagram] = useState<{
-        classes: any[];
-        relations: any[];
-        designPatterns: any[];
-    }>({
-        classes: [],
-        relations: [],
-        designPatterns: [],
-    });
-    mermaid.mermaidAPI
-        .parse(chart.substring(10).slice(0, -3).trim())
-        .parser.yy.clear();
-
-    let temp = mermaid.mermaidAPI.parse(chart.substring(10).slice(0, -3).trim())
-        .parser.yy;
-
-    console.log({
-        classes: temp.getClasses(),
-        relations: temp.getRelations(),
-    });
-
-    useEffect(() => {
-        axios
-            .post(
-                "https://europe-west1-quarterfall.cloudfunctions.net/parseidon",
-                {
-                    input: {
-                        classes: temp.getClasses(),
-                        relations: temp.getRelations(),
-                    },
-                },
-                {
-                    headers: { "Content-Type": "application/json" },
-                }
-            )
-            .then((res) => {
-                setClassDiagram(res.data);
-                console.log(res.data);
-            })
-            .catch((e) => console.log(e));
-    }, []);
-
-    console.log(classDiagram);
+const LogCard = ({ log }: any) => {
 
     return (
         <Card sx={{ minWidth: 275, mt: "10px" }}>
@@ -56,16 +9,16 @@ const LogCard = ({ chart }: MermaidRendererProps) => {
                 <div>
                     <h3>Classes</h3>
                     <ul>
-                        {classDiagram.classes.map((_class) => (
+                        {log.classes.map((_class: any) => (
                             <li>{_class.id}</li>
                         ))}
                     </ul>
                 </div>
-                {classDiagram.relations.length > 0 ? (
+                {log.relations.length > 0 ? (
                     <div>
                         <h3>Relations</h3>
                         <ul>
-                            {classDiagram.relations.map((relation) => (
+                            {log.relations.map((relation: any) => (
                                 <li>
                                     Class {relation.first_class} has{" "}
                                     {relation.relation} with{" "}
@@ -77,11 +30,11 @@ const LogCard = ({ chart }: MermaidRendererProps) => {
                 ) : (
                     <h3>No relations</h3>
                 )}
-                {classDiagram.designPatterns.length > 0 ? (
+                {log.designPatterns.length > 0 ? (
                     <div>
                         <h3>Design Patterns</h3>
                         <ul>
-                            {classDiagram.designPatterns.map((pattern) => (
+                            {log.designPatterns.map((pattern: any) => (
                                 <div>
                                     {pattern.className === "all" && (
                                         <li>{pattern.pattern} pattern</li>
