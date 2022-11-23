@@ -36,7 +36,7 @@ export function TextFieldController<
                     variant={props.variant}
                     focused
                     data-cy="input_Textfield"
-                    sx={{ width: "500px" }}
+                    sx={{ minWidth: "500px", maxWidth: "100%" }}
                     multiline
                     fullWidth={true}
                     value={value || ""}

@@ -15,12 +15,16 @@ const InputForm = ({
     commonCardVisible,
     changeCardVisible,
 }: InputFormProps) => {
+    // Move useForm here
+    // use the watch("code") to disable send button when the code hasn't changed
+    // You can track this with a simple code, setCode useState()
+    // disabled={watch("code") === code}
+
     return (
         <>
             <Card
                 sx={{
                     minWidth: 200,
-                    maxWidth: 545,
                     position: "relative",
                 }}
             >
@@ -33,7 +37,11 @@ const InputForm = ({
                     />
                 </CardContent>
                 <CardActions
-                    sx={{ justifyContent: "flex-end", marginRight: 2 }}
+                    sx={{
+                        justifyContent: "flex-end",
+                        marginRight: 2,
+                        marginBottom: 2,
+                    }}
                 >
                     <Button
                         variant="contained"

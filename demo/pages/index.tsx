@@ -89,6 +89,12 @@ export default function Home() {
                         classes: temp.getClasses(),
                         relations: temp.getRelations(),
                     },
+                },
+                {
+                    headers: {
+                        "Content-Type":
+                            "application/x-www-form-urlencoded; charset=UTF-8",
+                    },
                 }
             )
             .then((res) => {
@@ -109,7 +115,7 @@ export default function Home() {
     return (
         <>
             <Navbar />
-            <Grid container spacing={2} sx={{ paddingX: 10, marginTop: 6 }}>
+            <Grid container spacing={2} sx={{ padding: 6 }}>
                 <Grid item xs={6}>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <InputForm
