@@ -15,7 +15,9 @@ const MermaidRenderer = ({ chart }: MermaidRendererProps) => {
                     // eslint-disable-next-line
                     children={chart}
                     components={{
-                        p: ({ node, ...props }) => <p>Not MermaidJS syntax!</p>,
+                        p: ({ node, ...props }) => (
+                            <div>Not MermaidJS syntax!</div>
+                        ),
                         code({ node, inline, className, children, ...props }) {
                             const match = /(```mermaid)/.exec(chart);
                             let mermaidSyntax: string;
@@ -24,7 +26,7 @@ const MermaidRenderer = ({ chart }: MermaidRendererProps) => {
                             return match ? (
                                 <MermaidViewer chart={mermaidSyntax} />
                             ) : (
-                                <p>Not MermaidJS syntax!</p>
+                                <div>Not MermaidJS syntax!</div>
                             );
                         },
                     }}
