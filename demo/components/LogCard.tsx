@@ -10,7 +10,7 @@ const LogCard = ({ log }: any) => {
                     <h3>Classes</h3>
                     <ul>
                         {log.classes.map((_class: any) => (
-                            <li>{_class.id}</li>
+                            <li key={`class_${_class.id}`}>{_class.id}</li>
                         ))}
                     </ul>
                 </div>
@@ -19,7 +19,7 @@ const LogCard = ({ log }: any) => {
                         <h3>Relations</h3>
                         <ul>
                             {log.relations.map((relation: any) => (
-                                <li>
+                                <li key={`relation_${relation.id}`}>
                                     Class {relation.first_class} has{" "}
                                     {relation.relation} with{" "}
                                     {relation.second_class}
@@ -35,7 +35,7 @@ const LogCard = ({ log }: any) => {
                         <h3>Design Patterns</h3>
                         <ul>
                             {log.designPatterns.map((pattern: any) => (
-                                <div>
+                                <div key={`pattern_${pattern.id}`}>
                                     {pattern.className === "all" && (
                                         <li>{pattern.pattern} pattern</li>
                                     )}

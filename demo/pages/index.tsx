@@ -83,13 +83,13 @@ export default function Home() {
         });
         axios
             .post(
-                "http://localhost:3000/api/post/parse",
+                "https://europe-west1-quarterfall.cloudfunctions.net/parseidon",
                 {
                     
-                   //input: {
+                   input: {
                             classes: temp.getClasses(),
                             relations: temp.getRelations(),
-                   //     }
+                        }
                     
                 },
                 {
