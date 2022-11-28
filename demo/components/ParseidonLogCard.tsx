@@ -1,19 +1,46 @@
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+export type DesignPattern = {
+    id: number;
+    className: string;
+    pattern: string;
+};
 
-const LogCard = ({ log }: any) => {
+export type Relation = {
+    id: number;
+    first_class: string;
+    relation: string;
+    second_class: string;
+};
+
+export type _Class = {
+    id: string;
+    type: string;
+    members: string[];
+    methods: string[];
+    annotations: string[];
+    domId?: string;
+    cssClasses?: string[];
+};
+
+export interface MermaidParsedClassDiagram {
+    classes: _Class[];
+    designPatterns: DesignPattern[];
+    relations: Relation[];
+}
+const LogCard = ({ log }: {log: MermaidParsedClassDiagram}) => {
     return (
         <Card sx={{ minWidth: 275 }}>
             <CardContent>
                 <div>
                     <h3>Classes</h3>
                     <ul>
-                        {log.classes.map((_class: any) => (
+                        {log?.classes.map((_class: any) => (
                             <li key={`class_${_class.id}`}>{_class.id}</li>
                         ))}
                     </ul>
                 </div>
-                {log.relations.length > 0 ? (
+                {log?.relations.length > 0 ? (
                     <div>
                         <h3>Relations</h3>
                         <ul>
@@ -29,7 +56,7 @@ const LogCard = ({ log }: any) => {
                 ) : (
                     <h3>No relations</h3>
                 )}
-                {log.designPatterns.length > 0 ? (
+                {log?.designPatterns.length > 0 ? (
                     <div>
                         <h3>Design Patterns</h3>
                         <ul>

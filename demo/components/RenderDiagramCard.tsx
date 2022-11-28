@@ -1,7 +1,7 @@
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import ReactMarkdown from "react-markdown";
-import MermaidViewer from "./MermaidViewer";
+import MermaidViewer from "./MermaidDiagram";
 
 export interface MermaidRendererProps {
     chart: string;
