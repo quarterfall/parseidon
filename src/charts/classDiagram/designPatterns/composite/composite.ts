@@ -15,7 +15,7 @@ export async function checkComposite(knex: Knex): Promise<Boolean> {
                 .where("relations.relation", "realization")
                 //get the implemented interface (component)
                 .join("classes", compareClassesIDToSecondClass())
-                .where("classes.annotations", "interface")
+                .where("classes.type", "interface")
                 //check if a member of the class (composite) implementing the interface is an array of interface type
                 .join("members", checkIfClassOfMemberHasARelation())
                 .whereLike("members.type", "%[]")

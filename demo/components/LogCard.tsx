@@ -19,7 +19,7 @@ export type _Class = {
     type: string;
     members: string[];
     methods: string[];
-    annotations: string[];
+    annotations?: string[];
     domId?: string;
     cssClasses?: string[];
 };

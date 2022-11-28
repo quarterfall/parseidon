@@ -99,7 +99,7 @@ describe("Adapter pattern tests", () => {
         await conn
         .from("classes")
         .select("classes.id")
-        .where("annotations","interface")
+        .where("classes.type","interface")
         .then(res => {
             expect(res).toEqual([{id: "Client_Interface"}])
         })
@@ -109,7 +109,7 @@ describe("Adapter pattern tests", () => {
         await conn
         .from("classes")
         .select("classes.id")
-        .where("annotations","interface")
+        .where("classes.type","interface")
         .join("relations", checkIfClassHasRelation())
         .where("relations.relation","realization")
         .then(res => {
@@ -121,7 +121,7 @@ describe("Adapter pattern tests", () => {
         await conn
         .from("classes")
         .select("classes.id")
-        .where("annotations","interface")
+        .where("classes.type","interface")
         .join("relations", checkIfClassHasRelation())
         .where("relations.relation","realization")
         .join("members", checkIfClassOfMemberHasARelation())
@@ -134,7 +134,7 @@ describe("Adapter pattern tests", () => {
         await conn
         .from("classes")
         .select("classes.id")
-        .where("annotations","interface")
+        .where("classes.type","interface")
         .join("relations", checkIfClassHasRelation())
         .where("relations.relation","realization")
         .join("members", checkIfClassOfMemberHasARelation())

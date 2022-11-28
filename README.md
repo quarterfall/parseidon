@@ -2,6 +2,12 @@
 
 Knex.js based query builder to interpret design patterns in MermaidJS.
 
+# demo
+
+You can try out the ParseidonJS node module at the link below!
+
+[ParseidonJS Demo](https://parseidon.quarterfall.com)
+
 # Database Structure
 
 The database includes 4 tables, as shown in the diagram before. This database is queried to check for design patterns and relations in the class diagram.
@@ -22,7 +28,7 @@ class Classes {
 String id
 int[] members
 int[] methods
-String[] annotations
+String type
 }
 class Members {
 int id

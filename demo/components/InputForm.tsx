@@ -64,6 +64,7 @@ const InputForm = ({ setOutput }: InputFormProps) => {
             code: data.code,
             log: result?.data,
         });
+        console.log(result.data);
     };
 
     const onHandleSubmit = async (data: IFormInput) => {

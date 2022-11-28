@@ -12,7 +12,7 @@ export async function checkAdapter(knex: Knex): Promise<Boolean> {
             await knex
                 .from("classes")
                 .select("*")
-                .where("annotations", "interface")
+                .where("classes.type", "interface")
                 .join("relations", checkIfClassHasRelation())
                 .where("relations.relation", "realization")
                 //check if class (service) of the member of the class (adapter) implementing the interface (client) has an association relation

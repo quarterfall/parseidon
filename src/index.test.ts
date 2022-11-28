@@ -122,43 +122,37 @@ const result = {
             id: "Singleton",
             members: "-Singleton singleton$",
             methods: "-Singleton(),+getInstance()$ Singleton",
-            type: "",
-            annotations: ""
+            type: null,
         },
         {
             id: "SecondSingleton",
             members: "-SecondSingleton singleton$",
             methods: "-SecondSingleton(),+getInstance()$ SecondSingleton",
-            type: "",
-            annotations: ""
+            type: null,
         },
         {
             id: "Animal",
             members: "+int age,+String gender",
             methods: "+isMammal(),+mate()",
-            type: "",
-            annotations: ""
+            type: null,
         },
         {
             id: "Duck",
             members: "+String beakColor",
             methods: "+swim(),+quack()",
-            type: "",
-            annotations: ""
+            type: null,
         },
         {
             id: "Fish",
             members: "-int sizeInFeet",
             methods: "-canEat()",
-            type: "",
-            annotations: ""
+            type: null,
         },
         {
             id: "Zebra",
             members: "+bool is_wild",
             methods: "+run()",
-            type: "",
-            annotations: ""
+            type: null,
         },
     ],
     designPatterns: [

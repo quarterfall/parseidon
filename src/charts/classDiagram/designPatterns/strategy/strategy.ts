@@ -25,7 +25,7 @@ export async function checkStrategy(knex: Knex): Promise<Boolean> {
                 .join("members", compareMemberTypeToStrategyInterface())
                 .where("members.accessibility", "private")
                 .join("classes as c", compareClassIDToMemberType())
-                .where("c.annotations", "interface")
+                .where("c.type", "interface")
                 //check if the interface is implemented by a class (Concrete Strategy)
                 .join("relations as r", checkIfRelationWithMemberTypeExists())
                 .where("r.relation", "realization")

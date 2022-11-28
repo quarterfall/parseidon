@@ -105,7 +105,6 @@ export async function createClassesTable(knex: Knex) {
         table.string("type");
         table.string("members");
         table.string("methods");
-        table.string("annotations");
     });
 
     return knex("classes");
