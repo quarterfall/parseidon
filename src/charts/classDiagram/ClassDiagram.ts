@@ -15,6 +15,7 @@ export type _Class = {
     annotations?: string[];
     domId?: string;
     cssClasses?: string[];
+    patternLabel: string[];
 };
 
 export type Member = {
@@ -54,6 +55,7 @@ export class ClassDiagram {
                 _class.type = _class.annotations[0];
             }
             delete _class.annotations;
+            _class.patternLabel = [""];
         });
         this.debug = debug;
         this.relations = transformIntoRelations(this.debug);
