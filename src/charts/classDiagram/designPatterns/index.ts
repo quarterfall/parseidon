@@ -6,7 +6,7 @@ import { checkFactory } from "./factory";
 import { checkProxy } from "./proxy";
 import { checkSingletonByName } from "./singleton";
 import { checkStrategy } from "./strategy";
-// import { checkObserver } from "./observer";
+ import { checkObserver } from "./observer";
 
 export async function getAllDesignPatterns(
     knex: Knex
@@ -62,13 +62,13 @@ export async function getAllDesignPatterns(
         });
     }
 
-    // if (await checkObserver(knex)) {
-    //     designPatterns.push({
-    //         id: patternId++,
-    //         className: "all",
-    //         pattern: "observer",
-    //     });
-    // }
+    if (await checkObserver(knex)) {
+        designPatterns.push({
+            id: patternId++,
+            className: "all",
+            pattern: "observer",
+        });
+    }
 
     return designPatterns;
 }

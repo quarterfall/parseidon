@@ -1,8 +1,7 @@
 import {getKnexConnection} from "../../database";
-import { getAllDesignPatterns } from "..";
 import { ClassDiagram } from "../../ClassDiagram";
 import { initDatabase } from "../../database";
-import { checkInterfaceArrayName } from "./observer";
+import { checkObserver } from "./observer";
 
 const classes = {
     EventManager: {
@@ -24,7 +23,7 @@ const classes = {
         cssClasses: [],
         methods: ["+update(String filename)"],
         members: [],
-        annotations: [],
+        annotations: ["interface"],
         domId: "classid-EventListeners-61",
     },
     EmailAlertsListener: {
@@ -86,13 +85,6 @@ const relations = [
     },
 ];
 
-const patterns = [
-    {
-        id: 1,
-        className: "all",
-        pattern: "observer",
-    },
-];
 let classDiagram: ClassDiagram = new ClassDiagram(classes, relations);
 
 describe("Observer pattern tests", () => {
@@ -105,100 +97,100 @@ describe("Observer pattern tests", () => {
         knex.destroy();
     });
 
-    test("Test check observer pattern", async () => {
-        expect(JSON.stringify(await getAllDesignPatterns(knex))).toStrictEqual(
-            JSON.stringify(patterns)
-        );
-    });
+    test("Check observer",async () => {
+        await checkObserver(knex).then(res => {
+            expect(res).toEqual(true);
+        })
+    })
 
-    test("Test first step", async () => {
-        await knex
-            .from("classes")
-            .select("*")
-            .where("classes.type", "interface")
-            .join("relations", async function () {
-                this.on("relations.second_class", "classes.id");
-            })
-            .where("relations.relation", "realization")
-            .then((res) => {
-                expect(res.length).toBeGreaterThanOrEqual(1);
-            });
-    });
+    // test("Test first step", async () => {
+    //     await knex
+    //         .from("classes")
+    //         .select("*")
+    //         .where("classes.type", "interface")
+    //         .join("relations", async function () {
+    //             this.on("relations.second_class", "classes.id");
+    //         })
+    //         .where("relations.relation", "realization")
+    //         .then((res) => {
+    //             expect(res.length).toBeGreaterThanOrEqual(1);
+    //         });
+    // });
 
-    test("Test second step", async () => {
-        await knex
-            .from("classes")
-            .select("*")
-            .where("classes.type", "interface")
-            .join("relations", async function () {
-                this.on("relations.second_class", "classes.id");
-            })
-            .where("relations.relation", "realization")
-            .join("relations as r", async function () {
-                this.on("r.first_class", "classes.id");
-            })
-            .where("r.relation", "aggregation")
-            .then((res) => {
-                expect(res.length).toBeGreaterThanOrEqual(1);
-            });
-    });
+    // test("Test second step", async () => {
+    //     await knex
+    //         .from("classes")
+    //         .select("*")
+    //         .where("classes.type", "interface")
+    //         .join("relations", async function () {
+    //             this.on("relations.second_class", "classes.id");
+    //         })
+    //         .where("relations.relation", "realization")
+    //         .join("relations as r", async function () {
+    //             this.on("r.first_class", "classes.id");
+    //         })
+    //         .where("r.relation", "aggregation")
+    //         .then((res) => {
+    //             expect(res.length).toBeGreaterThanOrEqual(1);
+    //         });
+    // });
 
-    test("Test third step", async () => {
-        await knex
-            .from("classes")
-            .select("*")
-            .where("classes.type", "interface")
-            .join("relations", async function () {
-                this.on("relations.second_class", "classes.id");
-            })
-            .where("relations.relation", "realization")
-            .join("relations as r", async function () {
-                this.on("r.first_class", "classes.id");
-            })
-            .where("r.relation", "aggregation")
-            .join("members", async function () {
-                this.on("members.class", "r.second_class");
-            })
-            .whereLike(
-                "members.type",
-                `${await checkInterfaceArrayName(knex)}[]`
-            )
-            .then((res) => {
-                expect(res.length).toBeGreaterThanOrEqual(1);
-            });
-    });
+    // test("Test third step", async () => {
+    //     await knex
+    //         .from("classes")
+    //         .select("*")
+    //         .where("classes.type", "interface")
+    //         .join("relations", async function () {
+    //             this.on("relations.second_class", "classes.id");
+    //         })
+    //         .where("relations.relation", "realization")
+    //         .join("relations as r", async function () {
+    //             this.on("r.first_class", "classes.id");
+    //         })
+    //         .where("r.relation", "aggregation")
+    //         .join("members", async function () {
+    //             this.on("members.class", "r.second_class");
+    //         })
+    //         .whereLike(
+    //             "members.type",
+    //             `${await checkInterfaceArrayName(knex)}[]`
+    //         )
+    //         .then((res) => {
+    //             expect(res.length).toBeGreaterThanOrEqual(1);
+    //         });
+    // });
 
-    test("Test fourth step", async () => {
-        await knex
-            .from("classes")
-            .select("*")
-            .where("classes.type", "interface")
-            .join("relations", async function () {
-                this.on("relations.second_class", "classes.id");
-            })
-            .where("relations.relation", "realization")
-            .join("relations as r", async function () {
-                this.on("r.first_class", "classes.id");
-            })
-            .where("r.relation", "aggregation")
-            .join("members", async function () {
-                this.on("members.class", "r.second_class");
-            })
-            .whereLike(
-                "members.type",
-                `${await checkInterfaceArrayName(knex)}[]`
-            )
-            .join("methods", async function () {
-                this.on("methods.class", "members.class");
-            })
-            .join("parameters", async function () {
-                this.on("parameters.class", "methods.class").andOn(
-                    "parameters.type",
-                    "classes.id"
-                );
-            })
-            .then((res) => {
-                expect(res.length).toBeGreaterThanOrEqual(1);
-            });
-    });
+    // test("Test fourth step", async () => {
+    //     await knex
+    //         .from("classes")
+    //         .select("*")
+    //         .where("classes.type", "interface")
+    //         .join("relations", async function () {
+    //             this.on("relations.second_class", "classes.id");
+    //         })
+    //         .where("relations.relation", "realization")
+    //         .join("relations as r", async function () {
+    //             this.on("r.first_class", "classes.id");
+    //         })
+    //         .where("r.relation", "aggregation")
+    //         .join("members", async function () {
+    //             this.on("members.class", "r.second_class");
+    //         })
+    //         .whereLike(
+    //             "members.type",
+    //             `${await checkInterfaceArrayName(knex)}[]`
+    //         )
+    //         .join("methods", async function () {
+    //             this.on("methods.class", "members.class");
+    //         })
+    //         .join("parameters", async function () {
+    //             this.on("parameters.class", "methods.class").andOn(
+    //                 "parameters.type",
+    //                 "classes.id"
+    //             );
+    //         })
+    //         .then((res) => {
+    //             expect(res.length).toBeGreaterThanOrEqual(1);
+    //         });
+    // });
 });

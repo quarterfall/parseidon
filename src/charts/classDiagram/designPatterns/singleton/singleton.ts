@@ -26,17 +26,17 @@ export async function checkSingletonByName(knex: Knex) {
             );
         });
 
-   
-        if ((await singletonQuery).length) {
-            await singletonQuery.then(async res => {
+    if ((await singletonQuery).length) {
+        await singletonQuery.then(async (res) => {
+            if (res.length) {
                 await knex
-                .from("classes")
-                .where("id",res[0].class)
-                .update("patternLabel","singleton");
-            })
-            return true;
-        } else {
-            return false;
-        }
-
+                    .from("classes")
+                    .where("id", res[0].class)
+                    .update("patternLabel", "singleton");
+            }
+        });
+        return true;
+    } else {
+        return false;
+    }
 }

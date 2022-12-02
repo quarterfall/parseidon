@@ -17,20 +17,23 @@ const classes1 = [
         type: "",
         members: "+int age,+String gender",
         methods: "+isMammal(int lol),+mate()",
+        patternLabel: null,
     },
     {
         id: "Duck",
         type: "",
         members: "+String beakColor",
         methods: "+swim(),+quack()",
+        patternLabel: null,
     },
-    { id: "Fish", type: "", members: "-int sizeInFeet", methods: "-canEat()" },
-    { id: "Zebra", type: "", members: "+bool is_wild", methods: "+run()" },
+    { id: "Fish", type: "", members: "-int sizeInFeet", methods: "-canEat()", patternLabel: null, },
+    { id: "Zebra", type: "", members: "+bool is_wild", methods: "+run()", patternLabel: null, },
     {
         id: "Singleton",
         type: "",
         members: "-Singleton singleton$",
         methods: "-Singleton(),+getInstance()$ Singleton",
+        patternLabel: null,
     },
 ];
 

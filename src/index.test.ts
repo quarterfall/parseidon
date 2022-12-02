@@ -122,50 +122,51 @@ const result = {
             id: "Singleton",
             members: "-Singleton singleton$",
             methods: "-Singleton(),+getInstance()$ Singleton",
+            patternLabel: null,
             type: null,
         },
         {
             id: "SecondSingleton",
             members: "-SecondSingleton singleton$",
             methods: "-SecondSingleton(),+getInstance()$ SecondSingleton",
+            patternLabel: null,
             type: null,
         },
         {
             id: "Animal",
             members: "+int age,+String gender",
             methods: "+isMammal(),+mate()",
+            patternLabel: null,
             type: null,
         },
         {
             id: "Duck",
             members: "+String beakColor",
             methods: "+swim(),+quack()",
+            patternLabel: null,
             type: null,
         },
         {
             id: "Fish",
             members: "-int sizeInFeet",
             methods: "-canEat()",
+            patternLabel: null,
             type: null,
         },
         {
             id: "Zebra",
             members: "+bool is_wild",
             methods: "+run()",
+            patternLabel: null,
             type: null,
         },
     ],
     designPatterns: [
         {
-            className: "Singleton",
+            className: "all",
             id: 1,
             pattern: "singleton",
-        },
-        {
-            className: "SecondSingleton",
-            id: 2,
-            pattern: "singleton",
-        },
+        }
     ],
 
     relations: [
