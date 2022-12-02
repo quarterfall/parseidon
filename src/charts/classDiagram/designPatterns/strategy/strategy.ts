@@ -1,5 +1,4 @@
 import { Knex } from "knex";
-import { _Class } from "../../ClassDiagram";
 import {
     checkIfRelationWithMemberTypeExists,
     checkIfClassHasRelation,
@@ -11,9 +10,10 @@ import {
 } from "./strategy.queries";
 
 export async function checkStrategy(knex: Knex): Promise<Boolean> {
-    //get setter methods from a class (Context) with an aggregation relation
+
     return Boolean(
         (  
+            //get setter methods from a class (Context) with an aggregation relation
             await knex
                 .from("methods")
                 .select("*")

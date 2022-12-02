@@ -202,15 +202,15 @@ export function getMethodName(method: string): string {
 }
 
 //regex
-export function getMethodParameter(method: string): string {
+export function getMethodParameter(method: string): string[] {
     if (Math.abs(method.indexOf("(") - method.indexOf(")")) == 1) {
-        return "";
+        return [""];
     }
 
     if (method.includes(",")) {
         let pos: number = method.indexOf("(") + 1;
-        return method.substring(pos, method.indexOf(")"));
+        return method.substring(pos, method.indexOf(")")).replaceAll(", ",",").split(",");
     }
 
-    return method.substring(method.indexOf("(") + 1, method.indexOf(" "));
+    return [method.substring(method.indexOf("(") + 1, method.indexOf(")"))];
 }

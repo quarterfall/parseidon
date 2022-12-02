@@ -8,29 +8,32 @@ export const getPrivateConstructor = async (knex: Knex, className: string) => {
     });
 };
 
-//refactor anonymous functions
-
 export function compareClassIDToClassOfMethod(): Knex.JoinCallback {
     return async function () {
-         this.on("classes.id","=","methods.class")
+         this.on("classes.id","methods.class")
     };
 } 
 
 export function checkIfClassHasRelation(): Knex.JoinCallback {
     return async function() {
-        this.on("relations.second_class","=","classes.id")
+        this.on("relations.second_class","classes.id")
     }
 }
 
 export function checkIfRelationWithMemberTypeExists(): Knex.JoinCallback {
     return async function() {
-        this.on("r.second_class","=","members.type")
+        this.on("r.second_class","members.type")
     }
 }
 
 export function checkIfClassOfMemberHasARelation(): Knex.JoinCallback {
     return async function() {
-        this.on("relations.first_class","=","members.class")
+        this.on("relations.first_class","members.class")
     }
 }
 
+export function compareFirstClassToMemberClass(): Knex.JoinCallback {
+    return async function () {
+        this.on("r.first_class", "members.class");
+    }
+}

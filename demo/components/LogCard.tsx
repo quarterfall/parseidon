@@ -1,3 +1,4 @@
+import { Box } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 
@@ -65,12 +66,11 @@ const LogCard = ({ log }: { log: MermaidParsedClassDiagram | null }) => {
                             {log?.designPatterns.map((pattern: any) => (
                                 <div key={`pattern_${pattern.id}`}>
                                     {pattern.className === "all" && (
-                                        <li>{pattern.pattern} pattern</li>
+                                            <span><Box sx={{textTransform: "capitalize"}}>{pattern.pattern}</Box> pattern</span>
                                     )}
                                     {pattern.className !== "all" && (
                                         <li>
-                                            Class {pattern.className} is a{" "}
-                                            {pattern.pattern}
+                                            Class {pattern.className} is a{" "}{pattern.pattern} pattern
                                         </li>
                                     )}
                                 </div>

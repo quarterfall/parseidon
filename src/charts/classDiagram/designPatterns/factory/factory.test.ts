@@ -1,9 +1,12 @@
-import knex from "knex";
+import {getKnexConnection} from "../../database";
 import { ClassDiagram } from "../../ClassDiagram";
 import { initDatabase } from "../../database";
 import { getAllDesignPatterns } from "..";
 import { compareClassIDToClassOfMethod } from "../queries";
-import { compareMethodClassToRelationClass, compareMethodReturnTypeToClass } from "./factory.queries";
+import {
+    compareMethodClassToRelationClass,
+    compareMethodReturnTypeToClass,
+} from "./factory.queries";
 
 const classes = {
     CreatorA: {
@@ -78,73 +81,67 @@ const relations = [
 
 const patterns = [
     {
-        id:1,
+        id: 1,
         className: "all",
-        pattern: "factory"
+        pattern: "factory",
     },
-    
-]
-
-const conn = knex({
-    client: "sqlite3",
-    connection: {
-        filename: ":memory:",
-    },
-    useNullAsDefault: true,
-});
+];
 
 let classDiagram: ClassDiagram = new ClassDiagram(classes, relations);
 describe("Factory pattern tests", () => {
+    const knex = getKnexConnection();
     beforeAll(async () => {
-        await initDatabase(conn, classDiagram);
+        await initDatabase(knex, classDiagram);
     });
 
     afterAll(async () => {
-        conn.destroy();
+        knex.destroy();
     });
-    test("check factory pattern",async () => {
-        expect(JSON.stringify(await getAllDesignPatterns(conn))).toStrictEqual(JSON.stringify(patterns));
-    });
-
-    test("Test first step", async() => {
-       await conn
-        .from("classes")
-        .select("classes.id")
-        .join("methods", compareClassIDToClassOfMethod())
-        .where("classes.type","abstract")
-        .andWhere("methods.classifier","abstract")
-        .then(res => {
-            expect(res).toEqual([{id: "Creator"}])
-        })
+    test("check factory pattern", async () => {
+        expect(JSON.stringify(await getAllDesignPatterns(knex))).toStrictEqual(
+            JSON.stringify(patterns)
+        );
     });
 
-    test("Test second step", async() => {
-        await conn
-        .from("classes")
-        .select("classes.id")
-        .join("methods", compareClassIDToClassOfMethod())
-        .where("classes.type","abstract")
-        .andWhere("methods.classifier","abstract")
-        .join("relations", compareMethodReturnTypeToClass())
-        .where("relations.relation","realization")
-        .then(res => {
-            expect(res).toEqual([{id: "Creator"}])
-        })
+    test("Test first step", async () => {
+        await knex
+            .from("classes")
+            .select("classes.id")
+            .join("methods", compareClassIDToClassOfMethod())
+            .where("classes.type", "abstract")
+            .andWhere("methods.classifier", "abstract")
+            .then((res) => {
+                expect(res).toEqual([{ id: "Creator" }]);
+            });
     });
 
-    test("Test third step", async() => {
-        await conn
-        .from("classes")
-        .select("classes.id")
-        .join("methods", compareClassIDToClassOfMethod())
-        .where("classes.type","abstract")
-        .andWhere("methods.classifier","abstract")
-        .join("relations", compareMethodReturnTypeToClass())
-        .where("relations.relation","realization")
-        .join("relations as r", compareMethodClassToRelationClass())
-        .where("r.relation","inheritance")
-        .then(res => {
-            expect(res).toEqual([{id: "Creator"}])
-        })
-    })
+    test("Test second step", async () => {
+        await knex
+            .from("classes")
+            .select("classes.id")
+            .join("methods", compareClassIDToClassOfMethod())
+            .where("classes.type", "abstract")
+            .andWhere("methods.classifier", "abstract")
+            .join("relations", compareMethodReturnTypeToClass())
+            .where("relations.relation", "realization")
+            .then((res) => {
+                expect(res).toEqual([{ id: "Creator" }]);
+            });
+    });
+
+    test("Test third step", async () => {
+        await knex
+            .from("classes")
+            .select("classes.id")
+            .join("methods", compareClassIDToClassOfMethod())
+            .where("classes.type", "abstract")
+            .andWhere("methods.classifier", "abstract")
+            .join("relations", compareMethodReturnTypeToClass())
+            .where("relations.relation", "realization")
+            .join("relations as r", compareMethodClassToRelationClass())
+            .where("r.relation", "inheritance")
+            .then((res) => {
+                expect(res).toEqual([{ id: "Creator" }]);
+            });
+    });
 });

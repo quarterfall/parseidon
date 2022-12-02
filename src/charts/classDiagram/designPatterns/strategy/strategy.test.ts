@@ -1,8 +1,12 @@
-import knex from "knex";
+import {getKnexConnection} from "../../database";
 import { ClassDiagram } from "../../ClassDiagram";
 import { initDatabase } from "../../database";
 import { getAllDesignPatterns } from "..";
-import {checkIfRelationWithMemberTypeExists, checkIfClassHasRelation, compareClassIDToClassOfMethod } from "../queries";
+import {
+    checkIfRelationWithMemberTypeExists,
+    checkIfClassHasRelation,
+    compareClassIDToClassOfMethod,
+} from "../queries";
 import { compareMemberTypeToStrategyInterface } from "./strategy.queries";
 
 export const classes = {
@@ -84,85 +88,80 @@ export const relations = [
 
 const patterns = [
     {
-        id:1,
+        id: 1,
         className: "all",
-        pattern: "strategy"
-    }
-]
-
-const conn = knex({
-    client: "sqlite3",
-    connection: {
-        filename: ":memory:",
+        pattern: "strategy",
     },
-    useNullAsDefault: true,
-});
+];
 
 let classDiagram: ClassDiagram = new ClassDiagram(classes, relations);
 describe("Strategy pattern tests", () => {
+    const knex = getKnexConnection();
     beforeAll(async () => {
-        await initDatabase(conn, classDiagram);
+        await initDatabase(knex, classDiagram);
     });
 
     afterAll(async () => {
-        conn.destroy();
+        knex.destroy();
     });
-    test("check strategy pattern",async () => {
-        expect(JSON.stringify(await getAllDesignPatterns(conn))).toStrictEqual(JSON.stringify(patterns));
-    });
-
-    test("test first step", async() => {
-        await conn
-        .from("methods")
-        .select("methods.name")
-        .whereLike("methods.name", "set%")
-        .then(res => {
-            expect(res).toEqual([{name:"setStrategy"}])
-        });
+    test("check strategy pattern", async () => {
+        expect(JSON.stringify(await getAllDesignPatterns(knex))).toStrictEqual(
+            JSON.stringify(patterns)
+        );
     });
 
-    test("test second step", async() => {
-        await conn
-        .from("methods")
-        .select("methods.name")
-        .whereLike("methods.name", "set%")
-        .join("classes", compareClassIDToClassOfMethod())
-        .join("relations", checkIfClassHasRelation())
-        .where("relations.relation","aggregation")
-        .then(res => {
-            expect(res).toEqual([{name:"setStrategy"}])
-        });
+    test("test first step", async () => {
+        await knex
+            .from("methods")
+            .select("methods.name")
+            .whereLike("methods.name", "set%")
+            .then((res) => {
+                expect(res).toEqual([{ name: "setStrategy" }]);
+            });
     });
 
-    test("test third step", async() => {
-        await conn
-        .from("methods")
-        .select("methods.name")
-        .whereLike("methods.name", "set%")
-        .join("classes", compareClassIDToClassOfMethod())
-        .join("relations", checkIfClassHasRelation())
-        .where("relations.relation","aggregation")
-        .join("members", compareMemberTypeToStrategyInterface())
-        .where("members.accessibility","private")
-        .then(res => {
-            expect(res).toEqual([{name:"setStrategy"}])
-        });
+    test("test second step", async () => {
+        await knex
+            .from("methods")
+            .select("methods.name")
+            .whereLike("methods.name", "set%")
+            .join("classes", compareClassIDToClassOfMethod())
+            .join("relations", checkIfClassHasRelation())
+            .where("relations.relation", "aggregation")
+            .then((res) => {
+                expect(res).toEqual([{ name: "setStrategy" }]);
+            });
     });
 
-    test("test fourth step", async() => {
-        await conn
-        .from("methods")
-        .select("methods.name")
-        .whereLike("methods.name", "set%")
-        .join("classes", compareClassIDToClassOfMethod())
-        .join("relations", checkIfClassHasRelation())
-        .where("relations.relation","aggregation")
-        .join("members", compareMemberTypeToStrategyInterface())
-        .where("members.accessibility","private")
-        .join('relations as r', checkIfRelationWithMemberTypeExists())
-        .where("r.relation","realization")
-        .then(res => {
-            expect(res).toEqual([{name:"setStrategy"}])
-        });
+    test("test third step", async () => {
+        await knex
+            .from("methods")
+            .select("methods.name")
+            .whereLike("methods.name", "set%")
+            .join("classes", compareClassIDToClassOfMethod())
+            .join("relations", checkIfClassHasRelation())
+            .where("relations.relation", "aggregation")
+            .join("members", compareMemberTypeToStrategyInterface())
+            .where("members.accessibility", "private")
+            .then((res) => {
+                expect(res).toEqual([{ name: "setStrategy" }]);
+            });
+    });
+
+    test("test fourth step", async () => {
+        await knex
+            .from("methods")
+            .select("methods.name")
+            .whereLike("methods.name", "set%")
+            .join("classes", compareClassIDToClassOfMethod())
+            .join("relations", checkIfClassHasRelation())
+            .where("relations.relation", "aggregation")
+            .join("members", compareMemberTypeToStrategyInterface())
+            .where("members.accessibility", "private")
+            .join("relations as r", checkIfRelationWithMemberTypeExists())
+            .where("r.relation", "realization")
+            .then((res) => {
+                expect(res).toEqual([{ name: "setStrategy" }]);
+            });
     });
 });

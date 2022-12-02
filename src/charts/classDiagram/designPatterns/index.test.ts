@@ -1,36 +1,29 @@
-import knex from "knex";
+import { getKnexConnection } from "../database";
 import { getAllDesignPatterns } from ".";
 import { ClassDiagram } from "../ClassDiagram";
 import { initDatabase } from "../database";
 import { relations, classes } from "./singleton/singleton.test";
 
-const dPatterns = [{ id: 1, className: "Singleton", pattern: "singleton" }];
-
-const conn = knex({
-    client: "sqlite3",
-    connection: {
-        filename: ":memory:",
-    },
-    useNullAsDefault: true,
-});
+const dPatterns = [{ id: 1, className: "all", pattern: "singleton" }];
 
 let classDiagram: ClassDiagram = new ClassDiagram(classes, relations);
 
 describe("Singleton tests", () => {
+    const knex = getKnexConnection();
     beforeAll(async () => {
-        await initDatabase(conn, classDiagram);
+        await initDatabase(knex, classDiagram);
     });
 
     afterAll(async () => {
-        conn.destroy();
+        knex.destroy();
     });
 
     test("design pattern table exists", async () => {
-        expect(conn.schema.hasTable("patterns"));
+        expect(knex.schema.hasTable("patterns"));
     });
 
     test("Get all design patterns", async () => {
-        await getAllDesignPatterns(conn).then((res) => {
+        await getAllDesignPatterns(knex).then((res) => {
             expect(JSON.stringify(res)).toStrictEqual(
                 JSON.stringify(dPatterns)
             );

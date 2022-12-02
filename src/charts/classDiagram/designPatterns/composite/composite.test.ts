@@ -1,9 +1,13 @@
 import { ClassDiagram } from "../../ClassDiagram";
-import { initDatabase } from "../../database";
+import { getKnexConnection, initDatabase } from "../../database";
 import { getAllDesignPatterns } from "..";
-import knex from "knex";
-import { checkClassAndParameterOfMethod, compareClassesIDToSecondClass } from "./composite.queries";
+import {
+    checkClassAndParameterOfMethod,
+    compareClassesIDToSecondClass,
+    compareParameterToRelationClasses,
+} from "./composite.queries";
 import { checkIfClassOfMemberHasARelation } from "../queries";
+import { checkInterfaceArrayName } from "./composite";
 const classes = {
     Composite: {
         id: "Composite",
@@ -34,6 +38,7 @@ const classes = {
     },
 };
 const relations = [
+    //association
     {
         id1: "Composite",
         id2: "Component",
@@ -45,6 +50,7 @@ const relations = [
         relationTitle1: "none",
         relationTitle2: "none",
     },
+    //realization
     {
         id1: "Leaf",
         id2: "Component",
@@ -56,6 +62,7 @@ const relations = [
         relationTitle1: "none",
         relationTitle2: "none",
     },
+    //realization
     {
         id1: "Composite",
         id2: "Component",
@@ -67,6 +74,7 @@ const relations = [
         relationTitle1: "none",
         relationTitle2: "none",
     },
+    //aggregation
     {
         id1: "Component",
         id2: "Composite",
@@ -87,75 +95,80 @@ const patterns = [
         pattern: "composite",
     },
 ];
-const conn = knex({
-    client: "sqlite3",
-    connection: {
-        filename: ":memory:",
-    },
-    useNullAsDefault: true,
-});
 
 let classDiagram: ClassDiagram = new ClassDiagram(classes, relations);
 
 describe("Composite pattern tests", () => {
+    const knex = getKnexConnection();
     beforeAll(async () => {
-        await initDatabase(conn, classDiagram);
+        await initDatabase(knex, classDiagram);
     });
 
     afterAll(async () => {
-        conn.destroy();
+        knex.destroy();
     });
 
-    test("Test check composite", async() => {
-        expect(JSON.stringify(await getAllDesignPatterns(conn))).toStrictEqual(JSON.stringify(patterns));
+    test("Test check composite", async () => {
+        expect(JSON.stringify(await getAllDesignPatterns(knex))).toStrictEqual(
+            JSON.stringify(patterns)
+        );
     });
 
     test("Test first step", async () => {
-        await conn
-        .from("relations")
-        .select("relations.first_class")
-        .where("relations.relation","realization")
-        .then(res => {
-            expect(res).toEqual([{first_class:"Leaf"}, {first_class:"Composite"}])
-        })
-    })
+        await knex
+            .from("relations")
+            .select("relations.first_class")
+            .where("relations.relation", "realization")
+            .then((res) => {
+                expect(res).toEqual([
+                    { first_class: "Leaf" },
+                    { first_class: "Composite" },
+                ]);
+            });
+    });
 
     test("Test second step", async () => {
-        await conn
-        .from("relations")
-        .select("relations.first_class")
-        .where("relations.relation","realization")
-        .join("classes", compareClassesIDToSecondClass())
-        .then(res => {
-            expect(res).toEqual([{first_class:"Leaf"}, {first_class:"Composite"}])
-        })
-    })
+        await knex
+            .from("relations")
+            .select("relations.first_class")
+            .where("relations.relation", "realization")
+            .join("classes", compareClassesIDToSecondClass())
+            .then((res) => {
+                expect(res).toEqual([
+                    { first_class: "Leaf" },
+                    { first_class: "Composite" },
+                ]);
+            });
+    });
 
     test("Test third step", async () => {
-        await conn
-        .from("relations")
-        .select("relations.first_class")
-        .where("relations.relation","realization")
-        .join("classes", compareClassesIDToSecondClass())
-        .join("members", checkIfClassOfMemberHasARelation())
-        .whereLike("members.type", "%[]")
-        .then(res => {
-            expect(res).toEqual([{first_class:"Composite"}])
-        })
-    })
+        await knex
+            .from("relations")
+            .select("relations.first_class")
+            .where("relations.relation", "realization")
+            .join("classes", compareClassesIDToSecondClass())
+            .join("members", checkIfClassOfMemberHasARelation())
+            .whereLike("members.type", "%[]")
+            .then((res) => {
+                expect(res).toEqual([{ first_class: "Composite" }]);
+            });
+    });
 
     test("Test fourth step", async () => {
-        await conn
-        .from("relations")
-        .select("relations.first_class")
-        .where("relations.relation","realization")
-        .join("classes", compareClassesIDToSecondClass())
-        .join("members", checkIfClassOfMemberHasARelation())
-        .whereLike("members.type", "%[]")
-        .join("methods", checkClassAndParameterOfMethod())
-        .then(res => {
-            expect(res.length).toEqual(2);
-        })
-    })
-    
+        await knex
+            .from("relations")
+            .select("*")
+            .where("relations.relation", "realization")
+            .join("classes", compareClassesIDToSecondClass())
+            .join("members", checkIfClassOfMemberHasARelation())
+            .whereLike(
+                "members.type",
+                `${await checkInterfaceArrayName(knex)}[]`
+            )
+            .join("methods", checkClassAndParameterOfMethod())
+            .join("parameters", compareParameterToRelationClasses())
+            .then((res) => {
+                expect(res.length).toBeGreaterThanOrEqual(2);
+            });
+    });
 });

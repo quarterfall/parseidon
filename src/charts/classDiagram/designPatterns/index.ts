@@ -1,43 +1,74 @@
 import { Knex } from "knex";
 import { DesignPattern, _Class } from "../ClassDiagram";
-import { getAll } from "../database";
 import { checkAdapter } from "./adapter";
 import { checkComposite } from "./composite";
 import { checkFactory } from "./factory";
+import { checkProxy } from "./proxy";
 import { checkSingletonByName } from "./singleton";
 import { checkStrategy } from "./strategy";
+// import { checkObserver } from "./observer";
 
 export async function getAllDesignPatterns(
-    conn: Knex
+    knex: Knex
 ): Promise<DesignPattern[]> {
     let designPatterns: DesignPattern[] = [];
-    let classes: _Class[] = await getAll(conn, "classes");
     let patternId: number = 1;
-    for (let i=0;i<classes.length;i++) {
-        if ((await checkSingletonByName(conn, classes[i].id))) {
-            designPatterns.push({id:patternId++, className: classes[i].id, pattern: "singleton"})
-        }
+
+    if (await checkSingletonByName(knex)) {
+        designPatterns.push({
+            id: patternId++,
+            className: "all",
+            pattern: "singleton",
+        });
     }
 
-    if (await checkFactory(conn)) {
-        designPatterns.push({id:patternId++, className: "all", pattern: "factory"})
+    if (await checkFactory(knex)) {
+        designPatterns.push({
+            id: patternId++,
+            className: "all",
+            pattern: "factory",
+        });
     }
 
-    if (await checkStrategy(conn)) {
-        designPatterns.push({id:patternId++, className: "all", pattern: "strategy"})
+    if (await checkStrategy(knex)) {
+        designPatterns.push({
+            id: patternId++,
+            className: "all",
+            pattern: "strategy",
+        });
     }
-   
-    if (await checkAdapter(conn)) {
-        designPatterns.push({id:patternId++, className: "all", pattern: "adapter"})
-    }
-    
-    if (await checkComposite(conn)) {
-        designPatterns.push({id:patternId++, className: "all", pattern: "composite"})
 
+    if (await checkAdapter(knex)) {
+        designPatterns.push({
+            id: patternId++,
+            className: "all",
+            pattern: "adapter",
+        });
     }
+
+    if (await checkComposite(knex)) {
+        designPatterns.push({
+            id: patternId++,
+            className: "all",
+            pattern: "composite",
+        });
+    }
+
+    if (await checkProxy(knex)) {
+        designPatterns.push({
+            id: patternId++,
+            className: "all",
+            pattern: "proxy",
+        });
+    }
+
+    // if (await checkObserver(knex)) {
+    //     designPatterns.push({
+    //         id: patternId++,
+    //         className: "all",
+    //         pattern: "observer",
+    //     });
+    // }
 
     return designPatterns;
-
 }
-
-
