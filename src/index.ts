@@ -1,4 +1,4 @@
-import knex from "knex";
+import {getKnexConnection} from "./charts/classDiagram/database";
 import {
     ClassDiagram,
     DesignPattern,
@@ -9,6 +9,8 @@ import {
     Relation,
     _Class,
 } from "./charts/classDiagram";
+
+
 
 export type ParseidonOptions = {
     input: ClassDiagramType
@@ -38,34 +40,27 @@ export async function parseidon({input}: ParseidonOptions): Promise<
     try {
         console.log("[Starting Parse]");
         //establish database connection
-        const conn = knex({
-            client: "sqlite3",
-            connection: {
-                filename: ":memory:",
-            },
-            useNullAsDefault: true,
-        });
-
+        const knex = getKnexConnection();
         let classDiagram: ClassDiagram = new ClassDiagram(
             input.classes,
             input.relations
         );
        
-        await initDatabase(conn, classDiagram);
-        let classes: _Class[] = await getAllClasses(conn);
+        await initDatabase(knex, classDiagram);
+        let classes: _Class[] = await getAllClasses(knex);
         let relations: Relation[] = [];
         let designPatterns: DesignPattern[] = [];    
         if (!classDiagram?.getRelations().length) {
-            conn.destroy();
+            knex.destroy();
             return {
                 classes,
                 relations,
                 designPatterns
             }
         }
-        relations = await getAllRelations(conn);
-        designPatterns = await getAllDesignPatterns(conn);
-        conn.destroy();
+        relations = await getAllRelations(knex);
+        designPatterns = await getAllDesignPatterns(knex);
+        knex.destroy();
         return {
             classes,
             relations,

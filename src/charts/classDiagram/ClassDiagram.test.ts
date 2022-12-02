@@ -47,29 +47,26 @@ const debug = [
     },
 ];
 
-const newClasses = [
-    {
-        id: "Animal",
-        type: "",
-        methods: ["+isMammal()", "+mate()"],
-        members: ["+int age", "+String gender"],
-        annotations: []
-    },
-    {
-        id: "Duck",
-        type: "",
-        methods: ["+swim()", "+quack()"],
-        members: ["+String beakColor"],
-        annotations: []
-    },
-    {
-        id: "Fish",
-        type: "",
-        methods: ["-canEat()"],
-        members: ["-int sizeInFeet"],
-        annotations: []
-    },
-];
+// const newClasses = [
+//     {
+//         id: "Animal",
+//         type: "",
+//         methods: ["+isMammal()", "+mate()"],
+//         members: ["+int age", "+String gender"],
+//     },
+//     {
+//         id: "Duck",
+//         type: "",
+//         methods: ["+swim()", "+quack()"],
+//         members: ["+String beakColor"],
+//     },
+//     {
+//         id: "Fish",
+//         type: "",
+//         methods: ["-canEat()"],
+//         members: ["-int sizeInFeet"],
+//     },
+// ];
 
 const relations = [
     {
@@ -88,10 +85,7 @@ const relations = [
 
 let classDiagram: ClassDiagram = new ClassDiagram(classes, debug);
 
-describe("Database tests", () => {
-    test("Test getClasses", () => {
-        expect(classDiagram.getClasses()).toStrictEqual(newClasses);
-    });
+describe("Class Diagram tests", () => {
 
     test("Test getDebug", () => {
         expect(classDiagram.getDebug()).toStrictEqual(debug);

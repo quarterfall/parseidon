@@ -12,9 +12,10 @@ export type _Class = {
     type: string;
     members: string[];
     methods: string[];
-    annotations: string[];
+    annotations?: string[];
     domId?: string;
     cssClasses?: string[];
+    patternLabel: string[];
 };
 
 export type Member = {
@@ -36,7 +37,6 @@ export type Method = {
 
 export type DesignPattern = {
     id: number;
-    className: string;
     pattern: string;
 };
 
@@ -50,6 +50,12 @@ export class ClassDiagram {
         (this.classes || []).forEach((_class) => {
             delete _class.cssClasses;
             delete _class.domId;
+            _class.type = "";
+            if (_class.annotations) {
+                _class.type = _class.annotations[0];
+            }
+            delete _class.annotations;
+            _class.patternLabel = [""];
         });
         this.debug = debug;
         this.relations = transformIntoRelations(this.debug);

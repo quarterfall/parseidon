@@ -1,4 +1,4 @@
-import { Knex } from "knex";
+import knexConn,{ Knex } from "knex";
 import { ClassDiagram, Relation, _Class } from "./ClassDiagram";
 import {
     getAccessibility,
@@ -11,38 +11,47 @@ import {
     getMethodReturnType,
 } from "./util";
 
-export async function initDatabase(conn: Knex, classDiagram: ClassDiagram) {
-    await createMethodsTable(conn);
-    await createMembersTable(conn);
-    await createClassesTable(conn);
-    await createRelationsTable(conn);
+export const getKnexConnection = () => knexConn({
+    client: "sqlite3",
+    connection: {
+        filename: ":memory:",
+    },
+    useNullAsDefault: true,
+});
 
-    await insertMembersAndMethods(conn, classDiagram);
+export async function initDatabase(knex: Knex, classDiagram: ClassDiagram) {
+    await createMethodsTable(knex);
+    await createMembersTable(knex);
+    await createClassesTable(knex);
+    await createRelationsTable(knex);
+    await createParametersTable(knex);
+
+    await insertMembersMethodsParameters(knex, classDiagram);
 
     //insert classes
-    await insertArray(conn, "classes", classDiagram.getClasses());
+    await insertArray(knex, "classes", classDiagram.getClasses());
 
     //insert relations
-    await insertArray(conn, "relations", classDiagram.getRelations());
+    await insertArray(knex, "relations", classDiagram.getRelations());
 }
 
-export async function getAllRelations(conn: Knex): Promise<Relation[]> {
-    return getAll(conn, "relations");
+export async function getAllRelations(knex: Knex): Promise<Relation[]> {
+    return getAll(knex, "relations");
 }
 
-export async function getAllClasses(conn: Knex): Promise<_Class[]> {
-    return getAll(conn, "classes");
+export async function getAllClasses(knex: Knex): Promise<_Class[]> {
+    return getAll(knex, "classes");
 }
 
 export async function getAllWithRelation(
     relationName: string,
-    conn: Knex
+    knex: Knex
 ): Promise<Relation[]> {
-    return getAllWhere(conn, "relations", { relation: relationName });
+    return getAllWhere(knex, "relations", { relation: relationName });
 }
 
-export async function getAll(conn: Knex, tableName: string): Promise<any[]> {
-    return conn
+export async function getAll(knex: Knex, tableName: string): Promise<any[]> {
+    return knex
         .from(tableName)
         .select("*")
         .then((rows) => {
@@ -55,11 +64,11 @@ export async function getAll(conn: Knex, tableName: string): Promise<any[]> {
 }
 
 export async function getAllWhere(
-    conn: Knex,
+    knex: Knex,
     tableName: string,
     condition: any
 ): Promise<any[]> {
-    return conn
+    return knex
         .from(tableName)
         .select("*")
         .where(condition)
@@ -77,7 +86,6 @@ export async function createMethodsTable(knex: Knex) {
         table.increments("id").primary();
         table.string("returnType");
         table.string("name");
-        table.string("parameter");
         table.string("accessibility");
         table.string("classifier");
         table.string("class");
@@ -105,7 +113,7 @@ export async function createClassesTable(knex: Knex) {
         table.string("type");
         table.string("members");
         table.string("methods");
-        table.string("annotations");
+        table.string("patternLabel");
     });
 
     return knex("classes");
@@ -122,8 +130,20 @@ export async function createRelationsTable(knex: Knex) {
     return knex("relations");
 }
 
-export async function insertArray(conn: Knex, tableName: string, array: any[]) {
-    return conn(tableName)
+export async function createParametersTable(knex: Knex) {
+    await knex.schema.createTable("parameters", (table) => {
+        table.increments("id").primary();
+        table.string("type");
+        table.string("name");
+        table.string("class");
+        table.string("methodName");
+    });
+
+    return knex("parameters");
+}
+
+export async function insertArray(knex: Knex, tableName: string, array: any[]) {
+    return knex(tableName)
         .insert(array)
         .then()
         .catch((e) => {
@@ -132,14 +152,14 @@ export async function insertArray(conn: Knex, tableName: string, array: any[]) {
         });
 }
 
-export async function insertMembersAndMethods(
-    conn: Knex,
+export async function insertMembersMethodsParameters(
+    knex: Knex,
     classDiagram: ClassDiagram
 ) {
     //insert methods and members
     (classDiagram.getClasses() || []).forEach((_class) => {
         (_class?.members || []).forEach(async (member) => {
-            await conn("members").insert({
+            await knex("members").insert({
                 type: getMemberReturnType(member),
                 name: getMemberName(member),
                 accessibility: getAccessibility(member),
@@ -149,16 +169,26 @@ export async function insertMembersAndMethods(
         });
 
         (_class?.methods || []).forEach(async (method) => {
-            await conn("methods").insert({
+            await knex("methods").insert({
                 returnType:
                     getMethodReturnType(method) !== ""
                         ? getMethodReturnType(method)
                         : "void",
                 name: getMethodName(method),
-                parameter: getMethodParameter(method),
                 accessibility: getAccessibility(method),
                 classifier: getClassifierMethod(method),
                 class: _class.id,
+            });
+
+            (getMethodParameter(method) || []).forEach(async (parameter) => {
+                if (parameter !== "") {
+                    await knex("parameters").insert({
+                        type: getMemberReturnType(parameter),
+                        name: getMemberName(parameter),
+                        class: _class.id,
+                        methodName: getMethodName(method),
+                    });
+                }
             });
         });
     });

@@ -1,0 +1,1 @@
+export {checkObserver} from "./observer"

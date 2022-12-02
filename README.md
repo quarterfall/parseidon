@@ -2,6 +2,12 @@
 
 Knex.js based query builder to interpret design patterns in MermaidJS.
 
+# demo
+
+You can try out the ParseidonJS node module at the link below!
+
+[ParseidonJS Demo](https://parseidon.quarterfall.com)
+
 # Database Structure
 
 The database includes 4 tables, as shown in the diagram before. This database is queried to check for design patterns and relations in the class diagram.
@@ -22,7 +28,7 @@ class Classes {
 String id
 int[] members
 int[] methods
-String[] annotations
+String type
 }
 class Members {
 int id
@@ -310,4 +316,137 @@ class CompoundGraphic {
         +move(int x, int y)
         +draw()
     }
+```
+
+## Proxy
+
+### Steps
+
+1. Interface implemented by at least two classes (Proxy and Service)
+2. Proxy class has instance of service class
+3. Proxy class constructor has parameter of type service class
+4. Proxy class has association to Service
+
+```mermaid
+ classDiagram
+   class ThirdPartyYTLib{
+        +listVideos()
+        +getVideoInfo(id)
+        +downloadVideo(id)
+   }
+   class CachedYTClass{
+        -ThirdPartyYTClass service
+        +CachedYTClass(ThirdPartyYTClass s)
+        +listVideos()
+        +getVideoInfo(id)
+        +downloadVideo(id)
+   }
+   class ThirdPartyYTClass{
+        +listVideos()
+        +getVideoInfo(id)
+        +downloadVideo(id)
+   }
+   CachedYTClass ..|> ThirdPartyYTLib
+   ThirdPartyYTClass ..|> ThirdPartyYTLib
+   CachedYTClass o--> ThirdPartyYTLib
+```
+
+```
+ classDiagram
+   class ThirdPartyYTLib{
+        +listVideos()
+        +getVideoInfo(id)
+        +downloadVideo(id)
+   }
+   class CachedYTClass{
+        -ThirdPartyYTClass service
+        +CachedYTClass(ThirdPartyYTClass s)
+        +listVideos()
+        +getVideoInfo(id)
+        +downloadVideo(id)
+   }
+   class ThirdPartyYTClass{
+        +listVideos()
+        +getVideoInfo(id)
+        +downloadVideo(id)
+   }
+   CachedYTClass ..|> ThirdPartyYTLib
+   ThirdPartyYTClass ..|> ThirdPartyYTLib
+   CachedYTClass o--> ThirdPartyYTLib
+```
+
+## Observer
+
+### Steps
+
+1. Interface (Subscriber) implemented by at least one class (concrete subscribers)
+2. Interface has aggregation with a class (Publisher) 
+3. Publisher class has array of interface (Subscriber) type
+4. Publisher class has two methods with parameter of interface (Subscriber) type
+
+```mermaid
+ classDiagram
+    class EventManager{
+        -EventListeners listeners[]
+        +subscribe(EventListeners l)
+        +unsubscribe(EventListeners l)
+        +notify(EventType event, String data)
+    }
+    class EventListeners{
+        <<interface>>
+        +update(String filename)
+    }
+    class EmailAlertsListener{
+        +update(String filename)
+    }
+    class LoggingListener{
+        +update(String filename)
+    }
+    EventManager o--> EventListeners
+    EmailAlertsListener ..|> EventListeners
+    LoggingListener ..|> EventListeners
+```
+
+```
+ classDiagram
+    class EventManager{
+        -EventListeners listeners[]
+        +subscribe(EventListeners l)
+        +unsubscribe(EventListeners l)
+        +notify(EventType event, String data)
+    }
+    class EventListeners{
+        +update(String filename)
+    }
+    class EmailAlertsListener{
+        +update(String filename)
+    }
+    class LoggingListener{
+        +update(String filename)
+    }
+    EventManager o--> EventListeners
+    EmailAlertsListener ..|> EventListeners
+    LoggingListener ..|> EventListeners
+```
+
+```mermaid
+ classDiagram
+    class EventManager{
+        -EventListeners listeners[]
+        +subscribe(EventListeners l)
+        +unsubscribe(EventListeners l)
+        +notify(EventType event, String data)
+    }
+    class EventListeners{
+        +update(String filename)
+    }
+    class EmailAlertsListener{
+        +update(String filename)
+    }
+    class LoggingListener{
+        +update(String filename)
+    }
+    EventManager o--> EventListeners
+    EmailAlertsListener ..|> EventListeners
+    LoggingListener ..|> EventListeners
 ```

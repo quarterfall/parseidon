@@ -38,12 +38,15 @@ const InputForm = ({ setOutput }: InputFormProps) => {
         }
 
         mermaid.mermaidAPI
-            .parse(data?.code.substring(10).slice(0, -3).trim())
+            .parse(data?.code.substring(10).slice(0, -3).trimStart())
             .parser.yy.clear();
 
         let parsedInput = mermaid.mermaidAPI.parse(
-            data?.code.substring(10).slice(0, -3).trim() || ""
+            data?.code.substring(10).slice(0, -3).trimStart() || ""
         ).parser.yy;
+
+        console.log(parsedInput.getClasses());
+        console.log(parsedInput.getRelations());
 
         const result = await axios.post(
             "https://europe-west1-quarterfall.cloudfunctions.net/parseidon",
@@ -64,6 +67,7 @@ const InputForm = ({ setOutput }: InputFormProps) => {
             code: data.code,
             log: result?.data,
         });
+        console.log(result.data);
     };
 
     const onHandleSubmit = async (data: IFormInput) => {

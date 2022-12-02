@@ -1,84 +1,94 @@
-import knex from "knex";
+import { getKnexConnection } from "./database";
 import { ClassDiagram } from "./ClassDiagram";
-import { initDatabase, getAllRelations, getAllWithRelation, getAllClasses, getAll } from "./database";
+import {
+    initDatabase,
+    getAllRelations,
+    getAllWithRelation,
+    getAllClasses,
+    getAll,
+} from "./database";
 
 import { classes, relations } from "./designPatterns/singleton/singleton.test";
 
 let classDiagram: ClassDiagram = new ClassDiagram(classes, relations);
 const classes1 = [
     {
-      id: "Animal",
-      type: "",
-      members: "+int age,+String gender",
-      methods: "+isMammal(),+mate()",
-      annotations: ""
+        id: "Animal",
+        type: "",
+        members: "+int age,+String gender",
+        methods: "+isMammal(int lol),+mate()",
+        patternLabel: "",
     },
     {
-      id: "Duck",
-      type: "",
-      members: "+String beakColor",
-      methods: "+swim(),+quack()",
-      annotations: ""
+        id: "Duck",
+        type: "",
+        members: "+String beakColor",
+        methods: "+swim(),+quack()",
+        patternLabel: "",
     },
-    { id: "Fish", type: "", members: "-int sizeInFeet", methods: "-canEat()", annotations: "" },
-    { id: "Zebra", type: "", members: "+bool is_wild", methods: "+run()", annotations: "" },
     {
-      id: "Singleton",
-      type: "",
-      members: "-Singleton singleton$",
-      methods: "-Singleton(),+getInstance()$ Singleton",
-      annotations: ""
+        id: "Fish",
+        type: "",
+        members: "-int sizeInFeet",
+        methods: "-canEat()",
+        patternLabel: "",
     },
-  ];
-  
+    {
+        id: "Zebra",
+        type: "",
+        members: "+bool is_wild",
+        methods: "+run()",
+        patternLabel: "",
+    },
+    {
+        id: "Singleton",
+        type: "",
+        members: "-Singleton singleton$",
+        methods: "-Singleton(),+getInstance()$ Singleton",
+        patternLabel: "",
+    },
+];
 
 const relations1 = [
     {
-      id: 1,
-      first_class: "Duck",
-      relation: "inheritance",
-      second_class: "Animal",
+        id: 1,
+        first_class: "Duck",
+        relation: "inheritance",
+        second_class: "Animal",
     },
     {
-      id: 2,
-      first_class: "Fish",
-      relation: "inheritance",
-      second_class: "Animal",
+        id: 2,
+        first_class: "Fish",
+        relation: "inheritance",
+        second_class: "Animal",
     },
     {
-      id: 3,
-      first_class: "Zebra",
-      relation: "inheritance",
-      second_class: "Animal",
+        id: 3,
+        first_class: "Zebra",
+        relation: "inheritance",
+        second_class: "Animal",
     },
     {
-      id: 4,
-      first_class: "Singleton",
-      relation: "association",
-      second_class: "Singleton",
+        id: 4,
+        first_class: "Singleton",
+        relation: "association",
+        second_class: "Singleton",
     },
-  ];
-
-const conn = knex({
-    client: "sqlite3",
-    connection: {
-        filename: ":memory:",
-    },
-    useNullAsDefault: true,
-});
+];
 
 describe("Database tests", () => {
+    const knex = getKnexConnection();
     beforeAll(async () => {
-        await initDatabase(conn, classDiagram);
+        await initDatabase(knex, classDiagram);
     });
 
     afterAll(async () => {
-        conn.destroy();
+        knex.destroy();
     });
 
     test("Get all relations", async () => {
         let i: number = 0;
-        await getAllRelations(conn).then((res) => {
+        await getAllRelations(knex).then((res) => {
             res.forEach((relation) => {
                 expect(JSON.stringify(relation)).toStrictEqual(
                     JSON.stringify(relations1[i])
@@ -89,7 +99,7 @@ describe("Database tests", () => {
     });
 
     test("Get all inheritance relations", async () => {
-        await getAllWithRelation("inheritance", conn).then((res) => {
+        await getAllWithRelation("inheritance", knex).then((res) => {
             res.forEach((relation) => {
                 expect(relation.relation).toStrictEqual("inheritance");
             });
@@ -97,20 +107,28 @@ describe("Database tests", () => {
     });
 
     test("Get all classes", async () => {
-        let i:number = 0;
-        await getAllClasses(conn).then((res)=> {
+        let i: number = 0;
+        await getAllClasses(knex).then((res) => {
             res.forEach((relation) => {
-                expect(JSON.stringify(relation)).toStrictEqual(JSON.stringify(classes1[i]));
+                expect(JSON.stringify(relation)).toStrictEqual(
+                    JSON.stringify(classes1[i])
+                );
                 i++;
             });
-        })
+        });
     });
 
-    test("Get all methods", async() => {
-      await getAll(conn, "methods").then(res => {
-          res.forEach(relation => {
-            expect(relation.parameter).toBe("");
-          }) 
-      })
-    })
+    test("Get all parameters", async () => {
+        await getAll(knex, "parameters").then((res) => {
+            expect(res).toEqual([
+                {
+                    id: 1,
+                    type: "int",
+                    name: "lol",
+                    class: "Animal",
+                    methodName: "isMammal",
+                },
+            ]);
+        });
+    });
 });

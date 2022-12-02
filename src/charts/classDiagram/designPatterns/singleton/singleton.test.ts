@@ -1,16 +1,14 @@
-import knex from "knex";
+import {getKnexConnection} from "../../database";
 import { ClassDiagram } from "../../ClassDiagram";
 import { initDatabase } from "../../database";
 import { checkSingletonByName } from "./singleton";
-import { getPrivateStaticSingletonInstance, getPublicMethodReturningSingleton, getSingletonInstancesFromOtherClasses } from "./singleton.queries";
+import {
+    getPrivateStaticSingletonInstance,
+    getPublicMethodReturningSingleton,
+    getSingletonInstancesFromOtherClasses,
+} from "./singleton.queries";
 
-const conn = knex({
-    client: "sqlite3",
-    connection: {
-        filename: ":memory:",
-    },
-    useNullAsDefault: true,
-});
+
 export const relations = [
     {
         id1: "Animal",
@@ -47,7 +45,7 @@ export const classes = {
         id: "Animal",
         type: "",
         cssClasses: [],
-        methods: ["+isMammal()", "+mate()"],
+        methods: ["+isMammal(int lol)", "+mate()"],
         members: ["+int age", "+String gender"],
         annotations: [],
         domId: "classid-Animal-5",
@@ -93,39 +91,62 @@ export const classes = {
 let classDiagram: ClassDiagram = new ClassDiagram(classes, relations);
 
 describe("Singleton tests", () => {
+    const knex = getKnexConnection();
     beforeAll(async () => {
-        await initDatabase(conn, classDiagram);
+        await initDatabase(knex, classDiagram);
     });
 
     afterAll(async () => {
-        conn.destroy();
+        knex.destroy();
     });
 
     test("Check singleton", async () => {
-        expect(await checkSingletonByName(conn, "Singleton")).toStrictEqual(
-            true
+        expect(await checkSingletonByName(knex)).toStrictEqual(true);
+    });
+
+    test("getPublicMethodsReturningSingleton", async () => {
+        await getPublicMethodReturningSingleton(knex, "Singleton").then(
+            (res) => {
+                expect(JSON.stringify(res)).toStrictEqual(
+                    JSON.stringify([
+                        {
+                            id: 8,
+                            returnType: "Singleton",
+                            name: "getInstance",
+                            accessibility: "public",
+                            classifier: "static",
+                            class: "Singleton",
+                        },
+                    ])
+                );
+            }
         );
-        expect(await checkSingletonByName(conn, "Animal")).toStrictEqual(false);
-        expect(
-            await checkSingletonByName(conn,"inexistentClass",)
-        ).toStrictEqual(false);
     });
 
-    test("getPublicMethodsReturningSingleton", async() => {
-        await getPublicMethodReturningSingleton(conn, "Singleton").then(res => {
-            expect(JSON.stringify(res)).toStrictEqual(JSON.stringify([{id: 8, returnType: "Singleton", name: "getInstance", parameter: "", accessibility: "public", classifier: "static", class: "Singleton"}]))
-        })
+    test("getSingletonInstancesFromOtherClasses", async () => {
+        await getSingletonInstancesFromOtherClasses(knex, "Singleton").then(
+            (res) => {
+                expect(res.length).toBe(0);
+            }
+        );
     });
 
-    test("getSingletonInstancesFromOtherClasses", async() => {
-        await getSingletonInstancesFromOtherClasses(conn, "Singleton").then(res => {
-            expect(res.length).toBe(0);
-        })
-    });
-    
     test("getPrivateStaticSingletonInstance", async () => {
-        await getPrivateStaticSingletonInstance(conn, "Singleton").then(res => {
-             expect(JSON.stringify(res)).toStrictEqual(JSON.stringify([{id: 6, type: "Singleton", name: "singleton", accessibility: "private", classifier: "static", class: "Singleton"}]))
-          })
-      });
+        await getPrivateStaticSingletonInstance(knex, "Singleton").then(
+            (res) => {
+                expect(JSON.stringify(res)).toStrictEqual(
+                    JSON.stringify([
+                        {
+                            id: 6,
+                            type: "Singleton",
+                            name: "singleton",
+                            accessibility: "private",
+                            classifier: "static",
+                            class: "Singleton",
+                        },
+                    ])
+                );
+            }
+        );
+    });
 });

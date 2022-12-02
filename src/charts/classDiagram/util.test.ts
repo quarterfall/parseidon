@@ -109,7 +109,17 @@ describe("Index tests", () => {
         expect(getMethodReturnType("+isAlive()$ bool")).toStrictEqual("bool");
     });
 
-    test("Test getMethodParamter", () => {
-        expect(getMethodParameter("-isFunny(string sentence, int thing) bool")).toStrictEqual("string sentence, int thing");
-    })
+    test("Test getMethodParamter with multiple", () => {
+        expect(getMethodParameter("-isFunny(string sentence, int thing) bool")).toStrictEqual(["string sentence","int thing"]);
+    });
+
+    test("Test getMethodParamter with one", () => {
+        expect(getMethodParameter("-isFunny(string sentence) bool")).toStrictEqual(["string sentence"]);
+    });
+
+    test("Test getMethodParamter with none", () => {
+        expect(getMethodParameter("-isFunny() bool")).toStrictEqual([""]);
+    });
+
+
 });

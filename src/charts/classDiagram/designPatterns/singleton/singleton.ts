@@ -1,23 +1,42 @@
 import { Knex } from "knex";
-import { _Class } from "../../ClassDiagram";
-import { getPrivateConstructor } from "../queries";
-import {
-    getPrivateStaticSingletonInstance,
-    getPublicMethodReturningSingleton,
-    getSingletonInstancesFromOtherClasses,
-} from "./singleton.queries";
 
-export async function checkSingletonByName(knex: Knex, className: string) {
-    
-    if ((await getPrivateStaticSingletonInstance(knex, className)).length) {
-        if ((await getPrivateConstructor(knex, className)).length) {
-            if ((await getPublicMethodReturningSingleton(knex, className)).length) {
-                return !(await getSingletonInstancesFromOtherClasses(knex, className)).length
+export async function checkSingletonByName(knex: Knex) {
+    const singletonQuery = knex
+        .from("classes")
+        .select("*")
+        .join("members", async function () {
+            this.on("members.class", "classes.id").andOn(
+                "members.type",
+                "classes.id"
+            );
+        })
+        .where("members.accessibility", "private")
+        .where("members.classifier", "static")
+        .join("methods", async function () {
+            this.on("methods.class", "classes.id").andOn(
+                "methods.name",
+                "classes.id"
+            );
+        })
+        .where("methods.accessibility", "private")
+        .join("methods as m", async function () {
+            this.on("m.class", "classes.id").andOn(
+                "m.returnType",
+                "classes.id"
+            );
+        });
+
+    if ((await singletonQuery).length) {
+        await singletonQuery.then(async (res) => {
+            if (res.length) {
+                await knex
+                    .from("classes")
+                    .where("id", res[0].class)
+                    .update("patternLabel", "singleton");
             }
-        }
+        });
+        return true;
+    } else {
+        return false;
     }
-    return false;
 }
-
-
-

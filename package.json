@@ -1,6 +1,6 @@
 {
     "name": "@quarterfall/parseidon",
-    "version": "1.0.2",
+    "version": "1.0.4",
     "description": "Knex.js based query builder to interpret design patterns in MermaidJS.",
     "main": "dist/index.js",
     "scripts": {
