@@ -1,7 +1,7 @@
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import ReactMarkdown from "react-markdown";
-import MermaidViewer from "./MermaidViewer";
+import MermaidViewer from "./MermaidDiagram";
 
 export interface MermaidRendererProps {
     chart: string;
@@ -15,18 +15,16 @@ const MermaidRenderer = ({ chart }: MermaidRendererProps) => {
                     // eslint-disable-next-line
                     children={chart}
                     components={{
-                        p: ({ node, ...props }) => (
-                            <div>Not MermaidJS syntax!</div>
-                        ),
+                        p: ({ node, ...props }) => <p>Not MermaidJS syntax!</p>,
                         code({ node, inline, className, children, ...props }) {
                             const match = /(```mermaid)/.exec(chart);
                             let mermaidSyntax: string;
-                            mermaidSyntax = chart.substring(10).slice(0, -3);
+                            mermaidSyntax = chart.substring(10).slice(0, -3).trim();
 
                             return match ? (
                                 <MermaidViewer chart={mermaidSyntax} />
                             ) : (
-                                <div>Not MermaidJS syntax!</div>
+                                <p>Not MermaidJS syntax!</p>
                             );
                         },
                     }}

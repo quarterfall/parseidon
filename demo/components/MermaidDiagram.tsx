@@ -9,8 +9,5 @@ export default function MermaidViewer(props: MermaidViewerProps) {
     mermaid.initialize({
         startOnLoad: true,
     });
-
-
-
     return <div className="mermaid">{props.chart}</div>;
 }

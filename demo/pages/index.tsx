@@ -1,38 +1,49 @@
+import { Stack } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import Stack from "@mui/material/Stack";
 import { useState } from "react";
-import InputForm from "../components/InputForm";
-import LogCard, { MermaidParsedClassDiagram } from "../components/LogCard";
-import MermaidRenderer from "../components/MermaidRenderer";
+import InputForm from "../components/MermaidInputForm";
+import LogCard, { MermaidParsedClassDiagram } from "../components/ParseidonLogCard";
+import MermaidRenderer from "../components/RenderDiagramCard";
 import Navbar from "../components/Navbar";
+import React from "react";
+
+
 
 export default function Home() {
-    const [output, setOutput] = useState<{
+
+    const [data, setData] = useState<{
         code?: string;
         log?: MermaidParsedClassDiagram;
     } | null>({
         code: undefined,
-        log: undefined,
-    });
+        log: undefined
+    })
+
+    const input = {
+        data: data,
+        setData: setData
+    }
 
     return (
-        <div>
+        <React.Fragment>
             <Navbar />
             <Grid container spacing={2} sx={{ padding: 6 }}>
                 <Grid item xs={6}>
-                    <InputForm setOutput={setOutput} />
+                    <InputForm
+                       input={input}
+                    />
                 </Grid>
                 <Grid item xs={6}>
-                    <Stack spacing={1}>
-                        {output?.code ? (
-                            <MermaidRenderer chart={output.code} />
-                        ) : (
-                            <div />
-                        )}
-                        {output?.log ? <LogCard log={output.log} /> : <div />}
-                    </Stack>
+                        <Stack spacing={1}>
+                            {data?.code && (
+                                <MermaidRenderer chart={data.code} />
+                            )}
+                            {data?.log && (
+                                <LogCard log={data.log} />
+                            )}
+                        </Stack>
                 </Grid>
             </Grid>
-        </div>
+        </React.Fragment>
     );
 }

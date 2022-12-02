@@ -1,7 +1,5 @@
-import { Box } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-
 export type DesignPattern = {
     id: number;
     className: string;
@@ -20,9 +18,10 @@ export type _Class = {
     type: string;
     members: string[];
     methods: string[];
-    annotations?: string[];
+    annotations: string[];
     domId?: string;
     cssClasses?: string[];
+    patternLabel: string[];
 };
 
 export interface MermaidParsedClassDiagram {
@@ -30,8 +29,8 @@ export interface MermaidParsedClassDiagram {
     designPatterns: DesignPattern[];
     relations: Relation[];
 }
-
-const LogCard = ({ log }: { log: MermaidParsedClassDiagram | null }) => {
+const LogCard = ({ log }: {log: MermaidParsedClassDiagram}) => {
+    console.log(log);
     return (
         <Card sx={{ minWidth: 275 }}>
             <CardContent>
@@ -39,15 +38,20 @@ const LogCard = ({ log }: { log: MermaidParsedClassDiagram | null }) => {
                     <h3>Classes</h3>
                     <ul>
                         {log?.classes.map((_class: any) => (
-                            <li key={`class_${_class.id}`}>{_class.id}</li>
+                            _class.patternLabel ? (
+                                <li key={`class_${_class.id}`}>{_class.id} is an {_class.patternLabel}</li>
+                            ) :
+                            (
+                                <li key={`class_${_class.id}`}>{_class.id}</li>
+                            )
                         ))}
                     </ul>
                 </div>
-                {(log?.relations.length || []) > 0 ? (
+                {log?.relations.length > 0 ? (
                     <div>
                         <h3>Relations</h3>
                         <ul>
-                            {log?.relations.map((relation: any) => (
+                            {log.relations.map((relation: any) => (
                                 <li key={`relation_${relation.id}`}>
                                     Class {relation.first_class} has{" "}
                                     {relation.relation} with{" "}
@@ -59,18 +63,19 @@ const LogCard = ({ log }: { log: MermaidParsedClassDiagram | null }) => {
                 ) : (
                     <h3>No relations</h3>
                 )}
-                {(log?.designPatterns || []).length > 0 ? (
+                {log?.designPatterns.length > 0 ? (
                     <div>
                         <h3>Design Patterns</h3>
                         <ul>
-                            {log?.designPatterns.map((pattern: any) => (
+                            {log.designPatterns.map((pattern: any) => (
                                 <div key={`pattern_${pattern.id}`}>
                                     {pattern.className === "all" && (
-                                            <span><Box sx={{textTransform: "capitalize"}}>{pattern.pattern}</Box> pattern</span>
+                                        <li>{pattern.pattern} pattern</li>
                                     )}
                                     {pattern.className !== "all" && (
                                         <li>
-                                            Class {pattern.className} is a{" "}{pattern.pattern} pattern
+                                            Class {pattern.className} is a{" "}
+                                            {pattern.pattern}
                                         </li>
                                     )}
                                 </div>

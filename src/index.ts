@@ -50,6 +50,7 @@ export async function parseidon({input}: ParseidonOptions): Promise<
         let classes: _Class[] = await getAllClasses(knex);
         let relations: Relation[] = [];
         let designPatterns: DesignPattern[] = [];    
+        console.log(classes);
         if (!classDiagram?.getRelations().length) {
             knex.destroy();
             return {
