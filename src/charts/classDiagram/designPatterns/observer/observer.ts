@@ -40,33 +40,34 @@ export async function checkObserver(knex: Knex): Promise<Boolean> {
         });
 
     if ((await observerQuery).length) {
-        await observerQuery.then(async (res) => {
-            if (res.length) {
-                await knex
-                    .from("relations")
-                    .select("*")
-                    .where("first_class", res[0].second_class)
-                    .andWhere("second_class", res[0].first_class)
-                    .andWhere("relation", "realization")
-                    .then(async (res) => {
-                        if (res.length) {
-                            await knex
-                                .from("classes")
-                                .where("id", res[0].first_class)
-                                .update("patternLabel", "subscriber");
-                            await knex
-                                .from("classes")
-                                .where("id", res[0].second_class)
-                                .update("patternLabel", "publisher");
-                        }
-                        return true;
-                    });
+        return observerQuery.then(async (result) => {
+            if (!result.length) {
+                return false;
             }
+            return knex
+                .from("relations")
+                .select("*")
+                .where("first_class", result[0].second_class)
+                .andWhere("second_class", result[0].first_class)
+                .andWhere("relation", "realization")
+                .then(async (res) => {
+                    if (res.length) {
+                        return false;
+                    }
+                    await knex
+                        .from("classes")
+                        .where("id", result[0].first_class)
+                        .update("patternLabel", "subscriber");
+                    await knex
+                        .from("classes")
+                        .where("id", result[0].second_class)
+                        .update("patternLabel", "publisher");
+                    return true;
+                });
         });
     } else {
         return false;
     }
-    return false;
 }
 
 export async function checkInterfaceArrayName(knex: Knex): Promise<string> {

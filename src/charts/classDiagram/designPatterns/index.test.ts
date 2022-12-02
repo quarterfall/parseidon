@@ -4,7 +4,7 @@ import { ClassDiagram } from "../ClassDiagram";
 import { initDatabase } from "../database";
 import { relations, classes } from "./singleton/singleton.test";
 
-const dPatterns = [{ id: 1, className: "all", pattern: "singleton" }];
+const dPatterns = [{ id: 1, pattern: "singleton" }];
 
 let classDiagram: ClassDiagram = new ClassDiagram(classes, relations);
 

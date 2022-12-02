@@ -82,7 +82,6 @@ const relations = [
 const patterns = [
     {
         id: 1,
-        className: "all",
         pattern: "factory",
     },
 ];

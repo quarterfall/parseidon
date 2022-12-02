@@ -163,7 +163,6 @@ const result = {
     ],
     designPatterns: [
         {
-            className: "all",
             id: 1,
             pattern: "singleton",
         }

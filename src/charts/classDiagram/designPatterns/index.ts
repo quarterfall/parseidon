@@ -17,7 +17,6 @@ export async function getAllDesignPatterns(
     if (await checkSingletonByName(knex)) {
         designPatterns.push({
             id: patternId++,
-            className: "all",
             pattern: "singleton",
         });
     }
@@ -25,7 +24,6 @@ export async function getAllDesignPatterns(
     if (await checkFactory(knex)) {
         designPatterns.push({
             id: patternId++,
-            className: "all",
             pattern: "factory",
         });
     }
@@ -33,7 +31,6 @@ export async function getAllDesignPatterns(
     if (await checkStrategy(knex)) {
         designPatterns.push({
             id: patternId++,
-            className: "all",
             pattern: "strategy",
         });
     }
@@ -41,7 +38,6 @@ export async function getAllDesignPatterns(
     if (await checkAdapter(knex)) {
         designPatterns.push({
             id: patternId++,
-            className: "all",
             pattern: "adapter",
         });
     }
@@ -49,7 +45,6 @@ export async function getAllDesignPatterns(
     if (await checkComposite(knex)) {
         designPatterns.push({
             id: patternId++,
-            className: "all",
             pattern: "composite",
         });
     }
@@ -57,7 +52,6 @@ export async function getAllDesignPatterns(
     if (await checkProxy(knex)) {
         designPatterns.push({
             id: patternId++,
-            className: "all",
             pattern: "proxy",
         });
     }
@@ -65,7 +59,6 @@ export async function getAllDesignPatterns(
     if (await checkObserver(knex)) {
         designPatterns.push({
             id: patternId++,
-            className: "all",
             pattern: "observer",
         });
     }
