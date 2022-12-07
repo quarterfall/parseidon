@@ -21,7 +21,6 @@ export async function checkAdapter(knex: Knex): Promise<Boolean> {
     if ((await adapterQuery).length) {
         await adapterQuery.then(async (res) => {
             if (res.length) {
-                console.log(res);
                 await knex
                     .from("classes")
                     .where("id", res[0].first_class)

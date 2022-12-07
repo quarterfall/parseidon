@@ -28,7 +28,6 @@ export async function checkSingletonByName(knex: Knex) {
 
     if ((await singletonQuery).length) {
         await singletonQuery.then(async (res) => {
-            console.log(res);
             if (res.length) {
                 await knex
                     .from("classes")
